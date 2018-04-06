@@ -1,0 +1,7 @@
+/* Styling required so textfields do not change colour when selected */
+
+#locked {
+    -fx-text-box-border: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}

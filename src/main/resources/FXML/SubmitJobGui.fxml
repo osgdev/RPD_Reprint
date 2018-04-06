@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gov.dvla.osg.reprint.submitJob.SubmitJobController">
+    <center>
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <Tab fx:id="tabGeneral" onSelectionChanged="#tabChanged" text="General">
+                    <content>
+                        <HBox layoutX="-27.0" layoutY="-14.0" spacing="10.0">
+                            <children>
+                                <VBox>
+                                    <children>
+                                        <RadioButton fx:id="rbSingle" lineSpacing="10.0" mnemonicParsing="false" onAction="#rbSingleSelected" selected="true" text="Single">
+                                            <padding>
+                                                <Insets left="40.0" top="10.0" />
+                                            </padding>
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" />
+                                            </VBox.margin>
+                                            <toggleGroup>
+                                                <ToggleGroup fx:id="btnGroup" />
+                                            </toggleGroup>
+                                        </RadioButton>
+                                        <RadioButton fx:id="rbRange" lineSpacing="10.0" mnemonicParsing="false" onAction="#rbRangeSelected" text="Range" toggleGroup="$btnGroup">
+                                            <padding>
+                                                <Insets left="40.0" top="10.0" />
+                                            </padding>
+                                        </RadioButton>
+                                    </children>
+                                    <HBox.margin>
+                                        <Insets left="10.0" top="10.0" />
+                                    </HBox.margin>
+                                </VBox>
+                                <VBox maxHeight="300.0" maxWidth="300.0" minHeight="-Infinity" prefWidth="300.0" HBox.hgrow="NEVER">
+                                    <children>
+                                        <TextField fx:id="txtSingle" onAction="#processSingleEnterAction">
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" top="10.0" />
+                                            </VBox.margin>
+                                        </TextField>
+                                        <TextField id="hidden" fx:id="txtRange" editable="false" focusTraversable="false" onAction="#processRangeEnterAction" stylesheets="@/CSS/SubmitJobGui.css">
+                                            <VBox.margin>
+                                                <Insets bottom="5.0" />
+                                            </VBox.margin>
+                                        </TextField>
+                              <Label fx:id="txtError" alignment="TOP_LEFT" contentDisplay="TOP" maxHeight="1.7976931348623157E308" stylesheets="@/CSS/SubmitJobGui.css" wrapText="true">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets bottom="10.0" />
+                                 </padding>
+                              </Label>
+                                        <ListView fx:id="jList" disable="false" editable="false" focusTraversable="false" onMouseClicked="#mousePressed" stylesheets="@/CSS/SubmitJobGui.css" />
+                                    </children>
+                                    <HBox.margin>
+                                        <Insets left="20.0" top="10.0" />
+                                    </HBox.margin>
+                                </VBox>
+                            </children>
+                            <opaqueInsets>
+                                <Insets />
+                            </opaqueInsets>
+                            <padding>
+                                <Insets left="20.0" right="20.0" top="10.0" />
+                            </padding>
+                        </HBox>
+                    </content>
+                </Tab>
+                <Tab fx:id="tabCards" onSelectionChanged="#tabChanged" text="Cards">
+                    <content>
+                        <VBox alignment="CENTER" fillWidth="false">
+                            <children>
+                                <GridPane alignment="CENTER" hgap="10.0" layoutX="0.5" layoutY="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" vgap="20.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" maxWidth="100.0" minWidth="10.0" />
+                                        <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="100.0" minWidth="-Infinity" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                    </rowConstraints>
+                                    <children>
+                                        <ChoiceBox fx:id="chboxApp" layoutX="175.0" layoutY="141.0" prefWidth="100.0" GridPane.columnIndex="1" />
+                                        <ChoiceBox fx:id="chboxCardType" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        <Label contentDisplay="RIGHT" text="App:" GridPane.halignment="RIGHT" />
+                                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="10.0" layoutY="14.0" text="Card Type:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                                        <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="Run No:" GridPane.rowIndex="3" />
+                                        <TextField fx:id="txtRunNo" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <ChoiceBox fx:id="chboxSite" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="Site:" GridPane.rowIndex="2" />
+                                    </children>
+                                    <VBox.margin>
+                                        <Insets />
+                                    </VBox.margin>
+                                </GridPane>
+                        <Label id="error" fx:id="cardError" alignment="TOP_LEFT" contentDisplay="TOP" maxHeight="1.7976931348623157E308" stylesheets="@/CSS/SubmitJobGui.css" wrapText="true">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                            </children>
+                        </VBox>
+                    </content>
+                </Tab>
+            <Tab fx:id="tabHal" onSelectionChanged="#tabChanged" text="HAL">
+               <content>
+                  <VBox alignment="CENTER" fillWidth="false">
+                     <children>
+                        <GridPane alignment="CENTER" hgap="10.0" layoutX="0.5" layoutY="0.5" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" vgap="20.0">
+                           <children>
+                              <TextField fx:id="txtWorkflowId" GridPane.columnIndex="1" />
+                              <Label contentDisplay="RIGHT" text="Workflow ID:" GridPane.halignment="RIGHT" />
+                              <Label text="Site:" GridPane.halignment="RIGHT" GridPane.rowIndex="1" />
+                              <ChoiceBox fx:id="chHalSite" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" />
+                              <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="200.0" minWidth="-Infinity" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                           </rowConstraints>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </GridPane>
+                        <Label fx:id="halError" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" stylesheets="@/CSS/SubmitJobGui.css" wrapText="true">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+            </tabs>
+            <BorderPane.margin>
+                <Insets bottom="20.0" />
+            </BorderPane.margin>
+        </TabPane>
+    </center>
+    <bottom>
+        <HBox>
+            <children>
+                <Button id="btnSend" fx:id="btnSubmit" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#actionPerformed" text="SEND" textAlignment="CENTER">
+                    <HBox.margin>
+                        <Insets left="200.0" />
+                    </HBox.margin>
+                </Button>
+                <Button id="btnLogOut" fx:id="btnLogout" alignment="CENTER" contentDisplay="CENTER" layoutX="86.0" mnemonicParsing="false" onAction="#logout" text="LOGOUT" textAlignment="CENTER">
+                    <HBox.margin>
+                        <Insets left="150.0" />
+                    </HBox.margin>
+                </Button>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="20.0" />
+            </BorderPane.margin>
+        </HBox>
+    </bottom>
+    <top>
+        <MenuBar nodeOrientation="RIGHT_TO_LEFT" BorderPane.alignment="CENTER">
+            <menus>
+                <Menu fx:id="menuAdmin" mnemonicParsing="false" text="Admin" visible="false">
+                    <items>
+                        <CustomMenuItem mnemonicParsing="false" onAction="#openAdmin" text="Admin">
+                            <content>
+                                <Label text="Admin" />
+                            </content>
+                        </CustomMenuItem>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Logout">
+                    <items>
+                        <CustomMenuItem mnemonicParsing="false" onAction="#logout" text="Logout">
+                            <content>
+                                <Label text="Logout" />
+                            </content>
+                        </CustomMenuItem>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+</BorderPane>

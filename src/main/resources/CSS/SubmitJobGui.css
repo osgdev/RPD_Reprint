@@ -1,0 +1,34 @@
+/* Styling required to display error messages as labels */
+#error {
+	-fx-text-box-border: transparent;
+	-fx-focus-color: transparent;
+	-fx-faint-focus-color: transparent;
+	-fx-background-color: -fx-background;
+	-fx-text-fill: red;
+}
+
+#success {
+	-fx-text-box-border: transparent;
+	-fx-focus-color: transparent;
+	-fx-faint-focus-color: transparent;
+	-fx-background-color: -fx-background;
+	-fx-text-fill: green;
+}
+
+/* Hide the range textfield rather than disabling it */
+#hidden {
+	-fx-focus-color: none;
+	-fx-faint-focus-color: none;
+	-fx-background-color: -fx-background;
+}
+
+#locked {
+	-fx-background-color: linear-gradient(
+							to bottom, 
+							derive(-fx-text-box-border, -10%),
+							-fx-text-box-border),
+						  linear-gradient(
+							from 0px 0px to 0px 5px, 
+							derive(-fx-control-inner-background, -9%), 
+							-fx-control-inner-background);
+}
