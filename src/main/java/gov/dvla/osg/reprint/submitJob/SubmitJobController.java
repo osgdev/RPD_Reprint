@@ -283,7 +283,7 @@ public class SubmitJobController {
 						noOfRecords += reprint.getNoOfRecords();
 					}
 					// write data to files and send
-					fileHandler.setFileNames(props.getProperty("FileNamePrefixGeneral"));
+					fileHandler.setFileNames(props.getProperty("fileNamePrefixGeneral"));
 					fileHandler.setDatFileContent(datFileContent);
 					fileHandler.setEotFileContent("RUNVOL=" + noOfRecords + "\nUSER=" + Session.userName);
 					fileHandler.submit();
@@ -351,7 +351,7 @@ public class SubmitJobController {
 			new Thread(() -> {
 				try {
 					// write data to files and send
-					fileHandler.setFileNames(props.getProperty("FileNamePrefixCards"));
+					fileHandler.setFileNames(props.getProperty("fileNamePrefixCards"));
 					fileHandler.setDatFileContent("");
 					// write data to eot file
 					fileHandler.setEotFileContent("APP=" + selectedApp + "\nCARDTYPE=" + selectedCardType 
@@ -410,7 +410,7 @@ public class SubmitJobController {
 			new Thread(() -> {
 				try {
 					// write data to files and send
-					fileHandler.setFileNames(props.getProperty("FileNamePrefixHal"));
+					fileHandler.setFileNames(props.getProperty("fileNamePrefixHal"));
 					fileHandler.setDatFileContent("");
 					fileHandler.setEotFileContent(
 							"WID=" + workflowId + "\nLOCATION=" + selectedSite + "\nUSER=" + Session.userName);
