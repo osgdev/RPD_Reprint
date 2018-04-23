@@ -1,9 +1,12 @@
 package gov.dvla.osg.reprint.login;
 
-import static gov.dvla.osg.reprint.models.Session.props;
+import static gov.dvla.osg.reprint.models.Session.*;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.GsonBuilder;
 
@@ -16,7 +19,9 @@ import gov.dvla.osg.reprint.utils.JsonUtils;;
  * response to authenticate user when submitting files.
  */
 public class LogIn {
-
+	
+	static final Logger LOGGER = LogManager.getLogger();
+	
     private String errorMessage = "";
     private String errorAction = "";
     private String errorCode = "";
@@ -29,7 +34,7 @@ public class LogIn {
         
         try {
         	Response response = RestClient.rpdLogin(url);
-        	System.out.println(response.toString());
+        	LOGGER.debug(response.toString());
         	String data = response.readEntity(String.class); 
             if (response.getStatus() == 200) {
             	Session.token = JsonUtils.getTokenFromJson(data);

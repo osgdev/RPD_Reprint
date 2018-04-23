@@ -7,6 +7,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
@@ -20,6 +22,8 @@ import gov.dvla.osg.reprint.utils.JsonUtils;
  */
 public class RestClient {
 	
+	static final Logger LOGGER = LogManager.getLogger();
+	
 	/**
 	 * Sends a login request to RPD using credentials in the Session object.
 	 * @param url RPD login URL in format hostname:port address
@@ -27,13 +31,13 @@ public class RestClient {
 	 */
 	public static Response rpdLogin(String url) {
 		
-				//Note: unencrypted credentials is a requirement of the RPD RESTAPI
-				return ClientBuilder.newClient()
-				.target(url)
-				.queryParam("name", Session.userName)
-				.queryParam("pwd", Session.password)
-				.request(MediaType.APPLICATION_JSON)
-				.get();
+		//Note: unencrypted credentials is a requirement of the RPD RESTAPI
+		return ClientBuilder.newClient()
+							.target(url)
+							.queryParam("name", Session.userName)
+							.queryParam("pwd", Session.password)
+							.request(MediaType.APPLICATION_JSON)
+							.get();
 	}
 	
 	/**
@@ -44,12 +48,12 @@ public class RestClient {
 	 */
 	public static Response rpdGroup(String url) {
 		return ClientBuilder.newClient()
-				.register(MultiPartFeature.class)
-				.target(url)
-				.queryParam("attribute", "User.Groups")
-				.request(MediaType.APPLICATION_JSON)
-				.header("token", Session.token)
-				.get();
+							.register(MultiPartFeature.class)
+							.target(url)
+							.queryParam("attribute", "User.Groups")
+							.request(MediaType.APPLICATION_JSON)
+							.header("token", Session.token)
+							.get();
 	}
 
 	/**
@@ -61,21 +65,27 @@ public class RestClient {
 	public static Response rpdSubmit(String url, MultiPart multiPart) {
 		
 		/*********** Retrieve token for the AIW user ****************/
-		String loginUrl = props.getProperty("protocol") 
-        		+ props.getProperty("host") + ":" + props.getProperty("port")
-                + props.getProperty("loginUrl");
-		
-		AppCredentials appCredentials = new AppCredentials();
-		
-		Response response = ClientBuilder.newClient()
-			.target(loginUrl)
-			.queryParam("name", appCredentials.getUsername())
-			.queryParam("pwd", appCredentials.getPassword())
-			.request(MediaType.APPLICATION_JSON)
-			.get();
-		
-		String data = response.readEntity(String.class);
-		appCredentials.setToken(JsonUtils.getTokenFromJson(data));
+		AppCredentials appCredentials = null;
+
+		try {
+			String loginUrl = props.getProperty("protocol") 
+					+ props.getProperty("host") + ":" + props.getProperty("port")
+			        + props.getProperty("loginUrl");
+			
+			appCredentials = new AppCredentials();
+			
+			Response response = ClientBuilder.newClient()
+				.target(loginUrl)
+				.queryParam("name", appCredentials.getUsername())
+				.queryParam("pwd", appCredentials.getPassword())
+				.request(MediaType.APPLICATION_JSON)
+				.get();
+			
+			String data = response.readEntity(String.class);
+			appCredentials.setToken(JsonUtils.getTokenFromJson(data));
+		} catch (Exception ex) {
+			LOGGER.fatal("Unable to log Application into RPD", ex.getMessage());
+		}
 		/**********************************************************/
 		
 		// Send file using AIW user's token

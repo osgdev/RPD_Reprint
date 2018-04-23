@@ -9,6 +9,8 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gov.dvla.osg.reprint.utils.ErrorHandler;
+
 public class AppCredentials {
 	static final Logger LOGGER = LogManager.getLogger();
     private final String userName = "ReprintApp";
@@ -37,7 +39,7 @@ public class AppCredentials {
 			return (String) appPasswords.get(userName);
 		} catch (Exception ex) {
 			LOGGER.fatal("Unable to load application properties.", ex);
-			System.exit(1);
+			ErrorHandler.ErrorMsg("Unable to load application properties.", ex.getMessage());
 		}
     	return this.password;
     }

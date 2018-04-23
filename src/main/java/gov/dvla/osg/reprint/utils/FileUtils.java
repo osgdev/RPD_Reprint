@@ -4,8 +4,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class FileUtils {
 
+	static final Logger LOGGER = LogManager.getLogger();
+	
 	/**
 	 * Files that are not sucessfully sent to RPD remain in the working directory.
 	 * Files that are not manually moved or deleted by Dev team are automatically
@@ -27,17 +33,12 @@ public class FileUtils {
 					try {
 						Files.deleteIfExists(p);
 					} catch (IOException e) {
-						System.err.println("Unable to delte file:- " + p.getFileName());
+						LOGGER.fatal("Unable to delte file:- " + p.getFileName());
 					}
 				}
 			});
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.fatal(ExceptionUtils.getStackTrace(e));
 		}
-	}
-
-	// Suppress default constructor for noninstantiability
-	private FileUtils() {
-		throw new AssertionError();
 	}
 }

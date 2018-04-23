@@ -5,6 +5,9 @@ package gov.dvla.osg.reprint.utils;
 
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -21,6 +24,8 @@ import javafx.stage.Stage;
  */
 public class ErrorHandler {
 
+	static final Logger LOGGER = LogManager.getLogger();
+	
 	/**
 	 * @param errorCode Type of error.
 	 * @param errorMsg Details of the error.
@@ -35,27 +40,25 @@ public class ErrorHandler {
 	 * @param errorAction Prompt for action from the user.
 	 */
 	public static void ErrorMsg(String errorCode, String errorMsg, String errorAction) {
-			// create dialog for error message
-			Dialog<ButtonType> dialog = new Dialog<>();
-			// set the title on the window
-			dialog.setTitle("RPD Error");
-			// add logo to dialog
-			((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons()
-					.add(new Image(ErrorHandler.class.getResource("/Images/logo.jpg").toString()));
-			// add content to the pane
-			DialogPane dialogPane = dialog.getDialogPane();
-			dialogPane.getButtonTypes().add(ButtonType.OK);
-			dialogPane.setHeaderText("Error:  " + errorCode);
-			dialogPane.setContentText(errorMsg + "\n\n" + errorAction);
-			// display dialog and wait for a button to be clicked
-			Optional<ButtonType> result = dialog.showAndWait();
-			if (result.isPresent() && result.get() != ButtonType.OK) {
-				System.out.println("ErrorHandler: error closing dialog.");
-			}
-	}
-	
-	// Suppress default constructor for noninstantiability
-	private ErrorHandler() {
-		throw new AssertionError();
+		
+		LOGGER.warn("{} {} {}", errorCode, errorMsg, errorAction);
+		
+		// create dialog for error message
+		Dialog<ButtonType> dialog = new Dialog<>();
+		// set the title on the window
+		dialog.setTitle("RPD Error");
+		// add logo to dialog
+		((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons()
+				.add(new Image(ErrorHandler.class.getResource("/Images/logo.jpg").toString()));
+		// add content to the pane
+		DialogPane dialogPane = dialog.getDialogPane();
+		dialogPane.getButtonTypes().add(ButtonType.OK);
+		dialogPane.setHeaderText("Error:  " + errorCode);
+		dialogPane.setContentText(errorMsg + "\n\n" + errorAction);
+		// display dialog and wait for a button to be clicked
+		Optional<ButtonType> result = dialog.showAndWait();
+		if (result.isPresent() && result.get() != ButtonType.OK) {
+			LOGGER.fatal("ErrorHandler: error closing dialog.");
+		}
 	}
 }

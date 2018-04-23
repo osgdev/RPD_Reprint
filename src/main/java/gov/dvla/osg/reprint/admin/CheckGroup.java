@@ -1,10 +1,13 @@
 package gov.dvla.osg.reprint.admin;
 
-import static gov.dvla.osg.reprint.models.Session.props;
-import static gov.dvla.osg.reprint.utils.ErrorHandler.ErrorMsg;
+import static gov.dvla.osg.reprint.models.Session.*;
+import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.network.RestClient;
@@ -16,7 +19,9 @@ import gov.dvla.osg.reprint.utils.JsonUtils;
  * Passes response to utility function to check if user is a member of the Dev group.
  */
 public class CheckGroup {
-
+	
+	static final Logger LOGGER = LogManager.getLogger();
+	
 	public static void CheckIfAdmin() {
 		
 		String url = props.getProperty("protocol") 
@@ -29,7 +34,9 @@ public class CheckGroup {
 				Session.isAdmin = JsonUtils.isUserInDevGroup(jsonData);
 			} else {
 				// thrown exception prevents main window from opening.
-				throw new Exception("Null response from RPD web server.");
+				String msg = "Null response from RPD web server.";
+				LOGGER.fatal(msg);
+				throw new Exception(msg);
 			}
 		} catch (ProcessingException e) {
 			ErrorMsg("Connection timed out","Unable to connect to RPD web service.");

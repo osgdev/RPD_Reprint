@@ -1,6 +1,6 @@
 package gov.dvla.osg.reprint.utils;
 
-import static gov.dvla.osg.reprint.utils.ErrorHandler.ErrorMsg;
+import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -53,10 +53,5 @@ public class JsonUtils {
 			ErrorMsg("getTokenFromJson", e.getClass().getSimpleName(), e.getMessage());
 		}
 		return "";
-	}
-	
-	// Suppress default constructor for noninstantiability
-	private JsonUtils() {
-		throw new AssertionError();
 	}
 }

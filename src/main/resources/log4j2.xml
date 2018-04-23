@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration>
+	<Appenders>
+		<Console target="SYSTEM_OUT" name="console">
+			<PatternLayout pattern="[%-5level] %c{36} - %msg%ex{short}%n" />
+		</Console>
+		<File name="file">
+			<Append>false</Append>
+			<FileName>c:/logs/output.log</FileName>
+			<PatternLayout pattern="[%-5level] %c{36} - %msg%ex{short}%n" />
+		</File>
+	</Appenders>
+
+	<Loggers>
+		<Logger name="uk.gov.dvla.osg" level="all">
+			<AppenderRef level="all" ref="file" />
+		</Logger>
+		<Root level="all">
+			<AppenderRef level="all" ref="console" />
+		</Root>
+	</Loggers>
+
+</Configuration>

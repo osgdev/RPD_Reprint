@@ -1,8 +1,11 @@
 package gov.dvla.osg.reprint.login;
 
-import static gov.dvla.osg.reprint.utils.ErrorHandler.ErrorMsg;
+import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Strings;
 
@@ -14,7 +17,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -23,6 +29,8 @@ import javafx.stage.Stage;
  */
 public class LoginController {
 
+	static final Logger LOGGER = LogManager.getLogger();
+	
 	public TextField nameField;
 	public PasswordField passwordField;
 	public Button btnLogin;
@@ -62,12 +70,11 @@ public class LoginController {
 
 			// Login performed on background thread to prevent GUI freezing
 			new Thread(() -> {
-				System.out.println("Attempting to login...");
+				LOGGER.trace("Attempting to login...");
 				// bypass login while testing
 				if (!Main.DEBUG_MODE) {
 					login.login();
 				}
-				System.out.println("Login Complete.");
 				// if token wasn't retrieved & not in debug mode, display error dialog
 				if (Strings.nullToEmpty(Session.token).isEmpty() && !Main.DEBUG_MODE) {
 					Platform.runLater(() -> {
@@ -80,7 +87,7 @@ public class LoginController {
 						passwordField.requestFocus();
 					});
 				} else {
-					System.out.println("Login succeeded...");
+					LOGGER.trace("Login Complete.");
 					Platform.runLater(() -> {
 						try {
 							// bypass group check if running in debug mode

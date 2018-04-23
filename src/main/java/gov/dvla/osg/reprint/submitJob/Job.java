@@ -1,7 +1,7 @@
 package gov.dvla.osg.reprint.submitJob;
 
-import static gov.dvla.osg.reprint.models.Session.props;
-import static gov.dvla.osg.reprint.utils.ErrorHandler.ErrorMsg;
+import static gov.dvla.osg.reprint.models.Session.*;
+import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -11,6 +11,8 @@ import java.nio.file.Paths;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
@@ -19,6 +21,8 @@ import javafx.application.Platform;
 
 public class Job {
 
+	static final Logger LOGGER = LogManager.getLogger();
+	
     /**
      * Constructs the header and file body for the HTML message as a MultiPart object
      * and then passes it to the RestClient to send to RPD.
@@ -33,16 +37,16 @@ public class Job {
 
         try {
         	// construct html body with file as attachment
-        	System.out.println("\tCreating MultiPart...");
+        	LOGGER.trace("Creating MultiPart...");
         	MultiPart multiPart = new MultiPart();
             multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
             multiPart.bodyPart(new FileDataBodyPart("file", new File(filename)));
-            System.out.println("\tMultiPart Created!");
+            LOGGER.trace("MultiPart Created!");
             // send the message to RPD - errors thrown by outer catch block
         	Response response = RestClient.rpdSubmit(url, multiPart);
         	// 202 response means file received by RPD
             if (response.getStatus() == 202) {
-            	System.out.println("Success!");
+            	LOGGER.trace("Success!");
             	// File received by RPD, file can be safely deleted
             	if (Files.exists(Paths.get(filename), LinkOption.NOFOLLOW_LINKS)) {
             		Files.deleteIfExists(Paths.get(filename));

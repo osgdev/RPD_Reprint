@@ -6,11 +6,17 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * A utility class that encrypts or decrypts a file.
  */
 public class Cryptifier {
 
+	static final Logger LOGGER = LogManager.getLogger();
+	
     private static final String ALGORITHM = "AES";
     // uses a single key for encryption and decryption
     private static final String KEY = "JKDFJKJSVSNSDHFE";
@@ -49,13 +55,8 @@ public class Cryptifier {
 
         } catch (Exception e) {
         	// as cipher is run before gui loads no message will be shown to the user
-            e.printStackTrace();
+        	LOGGER.fatal(ExceptionUtils.getStackTrace(e));
             return null;
         }
     }
-    
-	// Suppress default constructor for noninstantiability
-	private Cryptifier() {
-		throw new AssertionError();
-	}
 }
