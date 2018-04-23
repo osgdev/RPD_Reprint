@@ -1,13 +1,11 @@
 package gov.dvla.osg.reprint.admin;
 
-import static gov.dvla.osg.reprint.models.Session.props;
-import static gov.dvla.osg.reprint.models.Session.propsFile;
-import static gov.dvla.osg.reprint.utils.ErrorHandler.ErrorMsg;
+import static gov.dvla.osg.reprint.models.Session.*;
+import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Enumeration;
 import java.util.Iterator;
 
 import gov.dvla.osg.reprint.utils.Cryptifier;
@@ -34,7 +32,7 @@ public class adminGuiController {
     ObservableList<Node> nodes;
     Iterator<Node> tfKeys;
     Iterator<Node> tfValues;
-    Enumeration em;
+    Iterator<Object> em;
 
     /**
      * Loops through all text fields in vboxValues to either enable or disable editing
@@ -104,11 +102,11 @@ public class adminGuiController {
     @FXML
     public void initialize() {
         setIterators();
-
+        
         // Add property keys and values to text fields
-        while (tfKeys.hasNext() && tfValues.hasNext() && em.hasMoreElements()) {
+        while (tfKeys.hasNext() && tfValues.hasNext() && em.hasNext()) {
             // Get key value pairs from props
-            String propKey = (String) em.nextElement();
+            String propKey = (String) em.next();
             String propValue = props.getProperty(propKey);
             // Put property keys into vboxKeys
             ((TextField) tfKeys.next()).setText(propKey);
@@ -127,6 +125,6 @@ public class adminGuiController {
         // Get Text Fields to insert property values
         tfValues = vboxValues.getChildren().iterator();
         // Get the individual key/value pairs within the property file
-        em = props.keys();
+        em = props.keySet().stream().sorted().iterator();
     }
 }
