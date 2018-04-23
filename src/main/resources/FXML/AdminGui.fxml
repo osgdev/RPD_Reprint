@@ -28,9 +28,9 @@
         </Label>
         <VBox fx:id="vboxKeys" spacing="5.0" GridPane.rowIndex="1">
             <children>
-                <TextField id="locked" focusTraversable="false" stylesheets="@/CSS/adminGui.css" />
-                <TextField id="locked" focusTraversable="false" layoutX="10.0" layoutY="10.0" stylesheets="@/CSS/adminGui.css" />
-                <TextField id="locked" focusTraversable="false" layoutX="10.0" layoutY="35.0" stylesheets="@/CSS/adminGui.css" />
+                <TextField id="locked" editable="false" focusTraversable="false" stylesheets="@/CSS/adminGui.css" />
+                <TextField id="locked" editable="false" focusTraversable="false" layoutX="10.0" layoutY="10.0" stylesheets="@/CSS/adminGui.css" />
+                <TextField id="locked" editable="false" focusTraversable="false" layoutX="10.0" layoutY="35.0" stylesheets="@/CSS/adminGui.css" />
                 <TextField id="locked" editable="false" focusTraversable="false" layoutX="10.0" layoutY="60.0" stylesheets="@/CSS/adminGui.css" />
                 <TextField id="locked" editable="false" focusTraversable="false" layoutX="10.0" layoutY="85.0" stylesheets="@/CSS/adminGui.css" />
                 <TextField id="locked" editable="false" focusTraversable="false" layoutX="10.0" layoutY="110.0" stylesheets="@/CSS/adminGui.css" />
