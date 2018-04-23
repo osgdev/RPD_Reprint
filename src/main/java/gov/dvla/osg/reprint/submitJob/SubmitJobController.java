@@ -1,10 +1,13 @@
 package gov.dvla.osg.reprint.submitJob;
 
-import static gov.dvla.osg.reprint.models.Session.props;
-import static gov.dvla.osg.reprint.utils.ErrorHandler.ErrorMsg;
+import static gov.dvla.osg.reprint.models.Session.*;
+import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 
 import javax.ws.rs.ProcessingException;
 
@@ -13,7 +16,11 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Strings;
 
 import gov.dvla.osg.reprint.login.LogOut;
-import gov.dvla.osg.reprint.models.*;
+import gov.dvla.osg.reprint.models.AbstractReprintType;
+import gov.dvla.osg.reprint.models.RangeReprint;
+import gov.dvla.osg.reprint.models.Session;
+import gov.dvla.osg.reprint.models.SingleReprint;
+import gov.dvla.osg.reprint.models.WholeBatchReprint;
 import gov.dvla.osg.reprint.report.Report;
 import gov.dvla.osg.reprint.utils.ErrorHandler;
 import gov.dvla.osg.reprint.utils.FileUtils;
@@ -191,8 +198,8 @@ public class SubmitJobController {
 				Stage adminStage = new Stage();
 				adminStage.setTitle("Admin Section");
 				adminStage.getIcons().add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
-				adminStage.setResizable(false);
-				adminStage.setScene(new Scene(root, 650, 600));
+				adminStage.setResizable(true);
+				adminStage.setScene(new Scene(root, 600, 700));
 				adminStage.show();
 			} catch (Exception e) {
 				ErrorMsg(e.getClass().getSimpleName(), e.getMessage());

@@ -7,7 +7,7 @@
 		</Console>
 		<File name="file">
 			<Append>false</Append>
-			<FileName>c:/logs/output.log</FileName>
+			<FileName>z:/osg/logs/reprint.log</FileName>
 			<PatternLayout pattern="[%-5level] %c{36} - %msg%ex{short}%n" />
 		</File>
 	</Appenders>

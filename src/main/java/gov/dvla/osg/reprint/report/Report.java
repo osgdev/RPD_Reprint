@@ -1,6 +1,6 @@
 package gov.dvla.osg.reprint.report;
 
-import static gov.dvla.osg.reprint.models.Session.props;
+import static gov.dvla.osg.reprint.models.Session.*;
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.awt.Desktop;
@@ -39,7 +39,7 @@ public class Report {
 	        LocalDateTime now = LocalDateTime.now();
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
 	        String timestamp = now.format(formatter);
-			String fName = props.getProperty("reportWorkingDir") + props.getProperty("FileNamePrefixReport") + Session.userName + "." + timestamp + ".pdf";
+			String fName = props.getProperty("reportWorkingDir") + props.getProperty("fileNamePrefixReport") + Session.userName + "." + timestamp + ".pdf";
 			// see if report file aready exists
 			File checkFile = new File(fName);
 			if (checkFile.exists()) {
@@ -69,7 +69,7 @@ public class Report {
 				pdfDoc.close();
 			}	
 			
-			/*** SHOW REPORT DURING TESTING ONLY ****/
+			/*** SHOW REPORT ****/
 			if (Desktop.isDesktopSupported()) {
 				File pdfFile = new File(fName);
 				Desktop.getDesktop().open(pdfFile);

@@ -50,10 +50,10 @@ public class LoginController {
 				// close login page and load admin view
 				Parent root = FXMLLoader.load(getClass().getResource("/FXML/AdminGui.fxml"));
 				Stage adminJobStage = new Stage();
-				adminJobStage.setResizable(false);
+				adminJobStage.setResizable(true);
 				adminJobStage.setTitle("RPD Reprints");
 				adminJobStage.getIcons().add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
-				adminJobStage.setScene(new Scene(root, 650, 600));
+				adminJobStage.setScene(new Scene(root, 600, 700));
 				adminJobStage.show();
 				closeLogin();
 			} catch (IOException e) {
