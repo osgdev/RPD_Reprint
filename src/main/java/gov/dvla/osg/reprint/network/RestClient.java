@@ -1,6 +1,6 @@
 package gov.dvla.osg.reprint.network;
 
-import static gov.dvla.osg.reprint.models.Session.props;
+import static gov.dvla.osg.reprint.models.Session.*;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -65,15 +65,17 @@ public class RestClient {
         		+ props.getProperty("host") + ":" + props.getProperty("port")
                 + props.getProperty("loginUrl");
 		
+		AppCredentials appCredentials = new AppCredentials();
+		
 		Response response = ClientBuilder.newClient()
 			.target(loginUrl)
-			.queryParam("name", AppCredentials.userName)
-			.queryParam("pwd", AppCredentials.password)
+			.queryParam("name", appCredentials.getUsername())
+			.queryParam("pwd", appCredentials.getPassword())
 			.request(MediaType.APPLICATION_JSON)
 			.get();
 		
 		String data = response.readEntity(String.class);
-		AppCredentials.token = JsonUtils.getTokenFromJson(data);
+		appCredentials.setToken(JsonUtils.getTokenFromJson(data));
 		/**********************************************************/
 		
 		// Send file using AIW user's token
@@ -81,7 +83,7 @@ public class RestClient {
 				.register(MultiPartFeature.class)
 				.target(url)
 				.request(MediaType.APPLICATION_JSON)
-		        .header("ippdcredential", "<credential token='"+AppCredentials.token+"'/>")
+		        .header("ippdcredential", "<credential token='" + appCredentials.getToken() + "'/>")
 		        .post(Entity.entity(multiPart, multiPart.getMediaType()));
 	}
 	
