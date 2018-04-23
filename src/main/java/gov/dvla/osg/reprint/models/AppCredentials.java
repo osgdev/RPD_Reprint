@@ -9,14 +9,12 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import gov.dvla.osg.reprint.utils.ErrorHandler;
-
 public class AppCredentials {
 	static final Logger LOGGER = LogManager.getLogger();
     private final String userName = "ReprintApp";
     private final String password ="@Juliet1234";
     private String token = "";
-    private String passwordsFile = "";
+    private String passwordsFile = "C:\\Users\\OSG\\Documents\\eclipse\\resources\\ConfigFiles\\appCreds.txt";
     
     /**
      * @return name of app in RPD
@@ -38,8 +36,7 @@ public class AppCredentials {
 			appPasswords.load(reader);
 			return (String) appPasswords.get(userName);
 		} catch (Exception ex) {
-			LOGGER.fatal("Unable to load application properties.", ex);
-			ErrorHandler.ErrorMsg("Unable to load application properties.", ex.getMessage());
+			LOGGER.fatal("Unable to load application password file.", ex);
 		}
     	return this.password;
     }

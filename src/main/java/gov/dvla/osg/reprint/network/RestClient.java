@@ -84,7 +84,7 @@ public class RestClient {
 			String data = response.readEntity(String.class);
 			appCredentials.setToken(JsonUtils.getTokenFromJson(data));
 		} catch (Exception ex) {
-			LOGGER.fatal("Unable to log Application into RPD", ex.getMessage());
+			LOGGER.fatal("Unable to log Application into RPD. Check password is valid.", ex.getMessage());
 		}
 		/**********************************************************/
 		
