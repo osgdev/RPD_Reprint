@@ -9,6 +9,8 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gov.dvla.osg.reprint.main.Main;
+
 public class AppCredentials {
 	static final Logger LOGGER = LogManager.getLogger();
     private final String userName = "ReprintApp";
@@ -16,6 +18,13 @@ public class AppCredentials {
     private String token = "";
     private String passwordsFile = "C:\\Users\\OSG\\Documents\\eclipse\\resources\\ConfigFiles\\appCreds.txt";
     
+    {
+    	if (Main.DEBUG_MODE) {
+    		passwordsFile = "C:\\Users\\OSG\\Documents\\eclipse\\resources\\ConfigFiles\\appCreds.txt";
+    	} else {
+    		passwordsFile = "J:\\OSG\\OIs\\RPD\\config.txt";
+    	}
+    }
     /**
      * @return name of app in RPD
      */
