@@ -3,20 +3,23 @@
 <Configuration>
 	<Appenders>
 		<Console target="SYSTEM_OUT" name="console">
-			<PatternLayout pattern="[%-5level] %c{36} - %msg%ex{short}%n" />
+			<PatternLayout pattern="%d{dd-MM-yyyy HH:mm:ss} [%-5level] %c{36} - %msg%ex{short}%n" />
 		</Console>
 		<RollingFile name="file">
-			<FileName>z:/osg/logs/reprint.log</FileName>
-			<PatternLayout pattern="%d{dd-MM-yyyy HH:mm:ss} [%-5level] %c{36} - %msg%ex{short}%n" />
+			<FileName>/osg/OIs/RPD/reprint.log</FileName>
+			<FilePattern>/osg/OIs/RPD/reprint-%d{MM-yyyy}.log</FilePattern>
+			<PatternLayout>
+				<Pattern>%d{dd-MM-yyyy HH:mm:ss} [%-5level] %c{36} - %msg%ex{short}%n</Pattern>
+			</PatternLayout>
 			<Policies>
-				<TimeBasedTriggerPolicy interval="1"/>
+				<TimeBasedTriggeringPolicy interval="1"/>
 			</Policies>
 			<DefaultRolloverStrategy max="1" />
 		</RollingFile>
 	</Appenders>
 
 	<Loggers>
-		<Logger name="uk.gov.dvla.osg" level="error">
+		<Logger name="gov.dvla.osg.reprint" level="WARN">
 			<AppenderRef ref="file" />
 		</Logger>
 		<Root level="all">
