@@ -5,16 +5,19 @@
 		<Console target="SYSTEM_OUT" name="console">
 			<PatternLayout pattern="[%-5level] %c{36} - %msg%ex{short}%n" />
 		</Console>
-		<File name="file">
-			<Append>false</Append>
+		<RollingFile name="file">
 			<FileName>z:/osg/logs/reprint.log</FileName>
-			<PatternLayout pattern="[%-5level] %c{36} - %msg%ex{short}%n" />
-		</File>
+			<PatternLayout pattern="%d{dd-MM-yyyy HH:mm:ss} [%-5level] %c{36} - %msg%ex{short}%n" />
+			<Policies>
+				<TimeBasedTriggerPolicy interval="1"/>
+			</Policies>
+			<DefaultRolloverStrategy max="1" />
+		</RollingFile>
 	</Appenders>
 
 	<Loggers>
-		<Logger name="uk.gov.dvla.osg" level="all">
-			<AppenderRef level="all" ref="file" />
+		<Logger name="uk.gov.dvla.osg" level="error">
+			<AppenderRef ref="file" />
 		</Logger>
 		<Root level="all">
 			<AppenderRef level="all" ref="console" />

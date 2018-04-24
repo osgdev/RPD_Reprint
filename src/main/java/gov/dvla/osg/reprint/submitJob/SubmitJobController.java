@@ -12,6 +12,9 @@ import java.util.Optional;
 import javax.ws.rs.ProcessingException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.common.base.Strings;
 
@@ -43,7 +46,9 @@ import javafx.stage.Stage;
  *
  */
 public class SubmitJobController {
-
+	
+	static final Logger LOGGER = LogManager.getLogger();
+	
 	// Objects on the General tab
 	public Tab tabGeneral;
 	public TextField txtRange;
@@ -301,14 +306,17 @@ public class SubmitJobController {
 					});
 				} catch (ProcessingException e) {
 					Platform.runLater(() -> {
+						LOGGER.error("Unable to transmit data file.");
 						setGeneralError("Unable to transmit data file.\nContact Dev Team if problem persists.");
 					});
 				} catch (IOException e) {
 					Platform.runLater(() -> {
+						LOGGER.error("Unable to create data file.");
 						setGeneralError("Unable to create data file.\nContact Dev Team if problem persists.");
 					});
 				} catch (Exception e) {
 					Platform.runLater(() -> {
+						LOGGER.error("Unable to transmit data file. {}", ExceptionUtils.getStackTrace(e));
 						setGeneralError(e.getMessage());
 					});
 				} finally {
