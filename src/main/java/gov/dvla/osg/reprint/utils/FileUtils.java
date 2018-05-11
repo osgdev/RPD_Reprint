@@ -2,11 +2,14 @@ package gov.dvla.osg.reprint.utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import gov.dvla.osg.reprint.models.Session;
 
 public class FileUtils {
 
@@ -25,20 +28,30 @@ public class FileUtils {
 
 		long purgeTime = System.currentTimeMillis() - (daysBack * dayInMilis);
 
-		try {
-			Files.list(Paths.get(workingDir))
-			.filter(p -> p.toFile().lastModified() < purgeTime)
-			.forEach(p -> {
-				if (p.toString().endsWith(".DAT") || p.toString().endsWith(".EOT")) {
-					try {
-						Files.deleteIfExists(p);
-					} catch (IOException e) {
-						LOGGER.fatal("Unable to delte file:- " + p.getFileName());
-					}
-				}
-			});
-		} catch (IOException e) {
-			LOGGER.fatal(ExceptionUtils.getStackTrace(e));
+		Path directory = Paths.get(workingDir);
+        boolean isDirectory = Files.isDirectory(directory);
+        boolean isWritable = Files.isWritable(directory);
+        
+		if (!isDirectory) {
+		    LOGGER.fatal("Directory [{}] does not exist or is not accessible. Please check config file.", workingDir);
+		} else if (!isWritable) {
+		    LOGGER.fatal("User {} does not have permission to delete from {}", Session.getUserName(), workingDir);
+		} else {
+    		try {
+    			Files.list(Paths.get(workingDir))
+    			.filter(p -> p.toFile().lastModified() < purgeTime)
+    			.forEach(p -> {
+    				if (StringUtils.endsWithAny(p.toString().toUpperCase(), new String[] {"DAT", "EOT", "PDF"})) {
+    					try {
+    						Files.deleteIfExists(p);
+    					} catch (IOException e) {
+    						LOGGER.fatal("Unable to delte file:- {}" + p.getFileName());
+    					}
+    				}
+    			});
+    		} catch (IOException e) {
+    			LOGGER.fatal(e.getMessage());
+    		}
 		}
 	}
 }

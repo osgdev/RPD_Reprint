@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
-import gov.dvla.osg.reprint.models.Session;
+import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.network.RestClient;
 import javafx.application.Platform;
 
@@ -31,9 +31,7 @@ public class Job {
      */
     public static void submit(String filename) throws Exception {
 
-        String url = Session.getProps().getProperty("protocol") 
-        		+ Session.getProps().getProperty("host") + ":" + Session.getProps().getProperty("port")
-                + Session.getProps().getProperty("submitJobUrl");
+        String url = Config.getProtocol() + Config.getHost() + ":" + Config.getPort() + Config.getSubmitJobUrl();
 
         try {
         	// construct html body with file as attachment

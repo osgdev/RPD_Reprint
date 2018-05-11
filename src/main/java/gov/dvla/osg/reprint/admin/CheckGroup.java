@@ -2,14 +2,13 @@ package gov.dvla.osg.reprint.admin;
 
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
-import java.util.Properties;
-
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.network.RestClient;
 import gov.dvla.osg.reprint.utils.JsonUtils;
@@ -24,12 +23,8 @@ public class CheckGroup {
 	static final Logger LOGGER = LogManager.getLogger();
 	
 	public static void CheckIfAdmin() {
-		
-	    Properties props = Session.getProps();
-	    
-		String url = props.getProperty("protocol") 
-				+ props.getProperty("host") + ":" + props.getProperty("port")
-				+ props.getProperty("userUrl") + Session.getUserName();
+			    
+		String url = Config.getProtocol() + Config.getHost() + ":" + Config.getPort() + Config.getUserUrl() + Session.getUserName();
 		
 		try (Response response = RestClient.rpdGroup(url)) {
 			if (response.getStatus() == 200) {

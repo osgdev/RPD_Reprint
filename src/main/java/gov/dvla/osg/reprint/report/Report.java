@@ -12,13 +12,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Properties;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.models.Session;
 
 /**
@@ -39,8 +39,7 @@ public class Report {
 	        LocalDateTime now = LocalDateTime.now();
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
 	        String timestamp = now.format(formatter);
-	        Properties props = Session.getProps();
-			String fName = props.getProperty("reportWorkingDir") + props.getProperty("fileNamePrefixReport") + Session.getUserName() + "." + timestamp + ".pdf";
+			String fName = Config.getReportWorkingDir() + Config.getFileNamePrefixReport() + Session.getUserName() + "." + timestamp + ".pdf";
 			// see if report file aready exists
 			File checkFile = new File(fName);
 			if (checkFile.exists()) {

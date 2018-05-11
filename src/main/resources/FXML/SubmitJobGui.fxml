@@ -106,15 +106,15 @@
                                         <Insets />
                                     </VBox.margin>
                                 </GridPane>
-                        <Label id="error" fx:id="cardError" alignment="TOP_LEFT" contentDisplay="TOP" maxHeight="1.7976931348623157E308" stylesheets="@/CSS/SubmitJobGui.css" wrapText="true">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
+                        <Label id="error" fx:id="cardError" alignment="CENTER" contentDisplay="TOP" maxHeight="1.7976931348623157E308" stylesheets="@/CSS/SubmitJobGui.css" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets top="10.0" />
                            </VBox.margin>
                         </Label>
                             </children>
+                     <padding>
+                        <Insets top="30.0" />
+                     </padding>
                         </VBox>
                     </content>
                 </Tab>
@@ -141,7 +141,7 @@
                               <Insets />
                            </VBox.margin>
                         </GridPane>
-                        <Label fx:id="halError" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" stylesheets="@/CSS/SubmitJobGui.css" wrapText="true">
+                        <Label fx:id="halError" alignment="CENTER" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" stylesheets="@/CSS/SubmitJobGui.css" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -150,6 +150,9 @@
                            </VBox.margin>
                         </Label>
                      </children>
+                     <padding>
+                        <Insets top="30.0" />
+                     </padding>
                   </VBox>
                </content>
             </Tab>

@@ -2,13 +2,11 @@ package gov.dvla.osg.reprint.admin;
 
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
 
-import gov.dvla.osg.reprint.models.Session;
-import gov.dvla.osg.reprint.utils.Cryptifier;
+import gov.dvla.osg.reprint.models.Config;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -78,18 +76,12 @@ public class adminGuiController {
         while (tfKeys.hasNext() && tfValues.hasNext()) {
             String propKey = ((TextField) tfKeys.next()).getText();
             String propValue = ((TextField) tfValues.next()).getText();
-            Session.getProps().setProperty(propKey, propValue);
+            Config.updateProperty(propKey, propValue);
         }
 
         // Save propeties object back to disk
         try {
-            // Get props as byte array
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            Session.getProps().store(output, null);
-            // encrypt props byte array
-            byte[] encryptedBytes = Cryptifier.encrypt(output.toByteArray());
-            // save to file
-            Files.write(Paths.get(Session.getPropsFile()), encryptedBytes);
+            Files.write(Paths.get(Config.getPropsFile()), Config.getEncryptedProps());
         } catch (Exception ex) {
             ErrorMsg(ex.getClass().getSimpleName(), ex.getMessage());
         }
@@ -107,7 +99,7 @@ public class adminGuiController {
         while (tfKeys.hasNext() && tfValues.hasNext() && em.hasNext()) {
             // Get key value pairs from props
             String propKey = (String) em.next();
-            String propValue = Session.getProps().getProperty(propKey);
+            String propValue = Config.getPropertyValue(propKey);
             // Put property keys into vboxKeys
             ((TextField) tfKeys.next()).setText(propKey);
             // Put property vaues into vboxValues
@@ -125,6 +117,6 @@ public class adminGuiController {
         // Get Text Fields to insert property values
         tfValues = vboxValues.getChildren().iterator();
         // Get the individual key/value pairs within the property file
-        em = Session.getProps().keySet().stream().sorted().iterator();
+        em = Config.getPropsIterator();
     }
 }

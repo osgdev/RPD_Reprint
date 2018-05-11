@@ -3,7 +3,6 @@ package gov.dvla.osg.reprint.main;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -11,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.internal.util.ExceptionUtils;
 
-import gov.dvla.osg.reprint.models.Session;
+import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.utils.Cryptifier;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -60,9 +59,9 @@ public class Main extends Application {
 				LOGGER.fatal("Incorrect number of args, Usage: {file}.jar {properties_filepath}");
 				System.exit(1);
 			} else {
-				Session.setPropsFile(args[0]);
-				if (!(new File(Session.getPropsFile()).exists())) {
-					LOGGER.fatal("Props file '" + Session.getPropsFile() + " doesn't exist!");
+				Config.setPropsFile(args[0]);
+				if (!(new File(Config.getPropsFile()).exists())) {
+					LOGGER.fatal("Props file '" + Config.getPropsFile() + " doesn't exist!");
 					System.exit(1);
 				} else {
 					setProperties();
@@ -80,7 +79,7 @@ public class Main extends Application {
 	private static void setProperties() {
 		try {
 			// decrypt file
-			 byte[] fileContents = Files.readAllBytes(Paths.get(Session.getPropsFile()));
+			 byte[] fileContents = Files.readAllBytes(Paths.get(Config.getPropsFile()));
 			 byte[] decryptedBytes = Cryptifier.decrypt(fileContents);
 			
 			/**********************FOR TESTING ONLY******************************
@@ -94,8 +93,7 @@ public class Main extends Application {
 			/*********************************************************************/
 			
 			// load properties file
-			InputStream reader = new ByteArrayInputStream(decryptedBytes);
-			Session.getProps().load(reader);
+			Config.setProps(new ByteArrayInputStream(decryptedBytes));
 		} catch (IOException ex) {
 			LOGGER.fatal("Unable to load application properties.");
 			System.exit(1);

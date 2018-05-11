@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.models.Session;
 
 /**
@@ -25,8 +26,8 @@ public class FileHandler {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
         String timestamp = now.format(formatter);
-        datFileName = Session.getProps().getProperty("reprintWorkingDir") + prefix + timestamp + ".DAT";
-        eotFileName = Session.getProps().getProperty("reprintWorkingDir") + prefix + timestamp + ".EOT";
+        datFileName = Config.getReprintWorkingDir() + prefix + timestamp + ".DAT";
+        eotFileName = Config.getReprintWorkingDir() + prefix + timestamp + ".EOT";
     }
 
     /**
@@ -63,7 +64,7 @@ public class FileHandler {
             }
         } else {
             // no write access
-            throw new IOException("User " + Session.getUserName() + " does not have write permission to " + f.getPath());
+            throw new IOException("User '" + Session.getUserName() + "' does not have write permission to " + f.getParent() + ".");
         }
     }
 

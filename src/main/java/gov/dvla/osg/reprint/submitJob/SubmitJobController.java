@@ -19,6 +19,7 @@ import com.google.common.base.Strings;
 
 import gov.dvla.osg.reprint.login.LogOut;
 import gov.dvla.osg.reprint.models.AbstractReprintType;
+import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.models.RangeReprint;
 import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.models.SingleReprint;
@@ -90,13 +91,13 @@ public class SubmitJobController {
 		mode = "single";
 		
 		// load dropdown lists in Cards tab
-		chboxApp.setItems(FXCollections.observableArrayList(Arrays.asList(Session.getProps().getProperty("appTypes").split(","))));
-		chboxCardType.setItems(FXCollections.observableArrayList(Arrays.asList(Session.getProps().getProperty("cardTypes").split(","))));
-		chboxSite.setItems(FXCollections.observableArrayList(Arrays.asList(Session.getProps().getProperty("sites").split(","))));
+		chboxApp.setItems(FXCollections.observableArrayList(Arrays.asList(Config.getAppTypes().split(","))));
+		chboxCardType.setItems(FXCollections.observableArrayList(Arrays.asList(Config.getCardTypes().split(","))));
+		chboxSite.setItems(FXCollections.observableArrayList(Arrays.asList(Config.getSites().split(","))));
 		jList.setItems(model);
 		
 		// load dropdown list in HAL tab
-		chHalSite.setItems(FXCollections.observableArrayList(Arrays.asList(Session.getProps().getProperty("sites").split(","))));
+		chHalSite.setItems(FXCollections.observableArrayList(Arrays.asList(Config.getSites().split(","))));
 
 		// Set focus for form
 		Platform.runLater(() -> txtSingle.requestFocus());
@@ -224,9 +225,8 @@ public class SubmitJobController {
 		// contact RPD on background thread to prevent main window from freezing
 		new Thread(() -> {
 			Platform.runLater(() -> {
-				String workingDir = Session.getProps().getProperty("reprintWorkingDir");
 				int daysBack = 14;
-				FileUtils.deleteFilesOlderThanNdays(workingDir, daysBack);
+				FileUtils.deleteFilesOlderThanNdays(Config.getReprintWorkingDir(), daysBack);
 				LogOut.logout();
 				enableButtons();
 				setGeneralSuccess("");
@@ -287,7 +287,7 @@ public class SubmitJobController {
 						noOfRecords += reprint.getNoOfRecords();
 					}
 					// write data to files and send
-					fileHandler.setFileNames(Session.getProps().getProperty("fileNamePrefixGeneral"));
+					fileHandler.setFileNames(Config.getFileNamePrefixGeneral());
 					fileHandler.setDatFileContent(datFileContent);
 					fileHandler.setEotFileContent("RUNVOL=" + noOfRecords + "\nUSER=" + Session.getUserName());
 					fileHandler.submit();
@@ -305,18 +305,18 @@ public class SubmitJobController {
 					});
 				} catch (ProcessingException e) {
 					Platform.runLater(() -> {
-						LOGGER.error("Unable to transmit data file. [{}]", e.getMessage());
+						LOGGER.error("Unable to transmit reprint data file. [{}]", e.getMessage());
 						setGeneralError("Unable to transmit data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
 				} catch (IOException e) {
 					Platform.runLater(() -> {
-						LOGGER.error("Unable to create data file. [{}]", e.getMessage());
+						LOGGER.error("Unable to create reprint data file. [{}]", e.getMessage());
 						setGeneralError("Unable to create data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
 				} catch (Exception e) {
 					Platform.runLater(() -> {
-						LOGGER.error("Unable to transmit data file. {}", ExceptionUtils.getStackTrace(e));
-						setGeneralError(e.getMessage());
+						LOGGER.error("Unable to transmit reprint data file. {}", ExceptionUtils.getStackTrace(e));
+						setGeneralError("Unable to transmit reprint data file. " + e.getMessage());
 					});
 				} finally {
 					enableButtons();
@@ -358,7 +358,7 @@ public class SubmitJobController {
 			new Thread(() -> {
 				try {
 					// write data to files and send
-					fileHandler.setFileNames(Session.getProps().getProperty("fileNamePrefixCards"));
+					fileHandler.setFileNames(Config.getFileNamePrefixCards());
 					fileHandler.setDatFileContent("");
 					// write data to eot file
 					fileHandler.setEotFileContent("APP=" + selectedApp + "\nCARDTYPE=" + selectedCardType 
@@ -375,15 +375,18 @@ public class SubmitJobController {
 					});
 				} catch (ProcessingException e) {
 					Platform.runLater(() -> {
-						setCardError("Unable to transmit reprint file.\nContact Dev Team if problem persists.");
+					    LOGGER.error("Unable to transmit reprint data file. [{}]", e.getMessage());
+                        setCardError("Unable to transmit data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
 				} catch (IOException e) {
 					Platform.runLater(() -> {
-						setCardError("Unable to create reprint file.\nContact Dev Team if problem persists.");
+					    LOGGER.error("Unable to create reprint data file. [{}]", e.getMessage());
+                        setCardError("Unable to create data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
 				} catch (Exception e) {
 					Platform.runLater(() -> {
-						setCardError(e.getMessage());
+					    LOGGER.error("Unable to transmit reprint data file. {}", ExceptionUtils.getStackTrace(e));
+                        setCardError("Unable to transmit reprint data file. " + e.getMessage());
 					});
 				} finally {
 					enableButtons();
@@ -417,7 +420,7 @@ public class SubmitJobController {
 			new Thread(() -> {
 				try {
 					// write data to files and send
-					fileHandler.setFileNames(Session.getProps().getProperty("fileNamePrefixHal"));
+					fileHandler.setFileNames(Config.getFileNamePrefixHal());
 					fileHandler.setDatFileContent("");
 					fileHandler.setEotFileContent(
 							"WID=" + workflowId + "\nLOCATION=" + selectedSite + "\nUSER=" + Session.getUserName());
@@ -433,15 +436,18 @@ public class SubmitJobController {
 
 				} catch (ProcessingException e) {
 					Platform.runLater(() -> {
-						setHalError("Unable to transmit files.\nContact Dev Team if problem persists.");
+					    LOGGER.error("Unable to transmit reprint data file. [{}]", e.getMessage());
+                        setHalError("Unable to transmit data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
 				} catch (IOException e) {
 					Platform.runLater(() -> {
-						setHalError("Unable to create files.\nContact Dev Team if problem persists.");
+					    LOGGER.error("Unable to create reprint data file. [{}]", e.getMessage());
+                        setHalError("Unable to create data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
 				} catch (Exception e) {
 					Platform.runLater(() -> {
-						setHalError(e.getMessage());
+					    LOGGER.error("Unable to transmit reprint data file. {}", ExceptionUtils.getStackTrace(e));
+                        setHalError("Unable to transmit reprint data file. " + e.getMessage());
 					});
 				} finally {
 					enableButtons();

@@ -1,7 +1,5 @@
 package gov.dvla.osg.reprint.login;
 
-import java.util.Properties;
-
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
 
@@ -10,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.gson.GsonBuilder;
 
+import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.network.RestClient;
 import gov.dvla.osg.reprint.utils.JsonUtils;;
@@ -27,10 +26,8 @@ public class LogIn {
     private String errorCode = "";
 
     public void login() {
-        Properties props = Session.getProps();
-        String url = props.getProperty("protocol") 
-        		+ props.getProperty("host") + ":" + props.getProperty("port")
-                + props.getProperty("loginUrl");
+        
+        String url = Config.getProtocol() + Config.getHost() + ":" + Config.getPort() + Config.getLoginUrl();
         
         try {
         	Response response = RestClient.rpdLogin(url);

@@ -1,7 +1,5 @@
 package gov.dvla.osg.reprint.models;
 
-import java.util.Properties;
-
 /**
  * Session information for the logged in user.
  */
@@ -10,10 +8,6 @@ public class Session {
     private static String password;
     private static String token;
     private static Boolean isAdmin;
-    // absolute filepath for the rpdws.properties file
-    private static String propsFile;
-    // decrypted properties holding configuration data
-    private static Properties props = new Properties();
 
     /**
      * @return the userName
@@ -69,27 +63,6 @@ public class Session {
      */
     public static void setIsAdmin(Boolean isAdmin) {
         Session.isAdmin = isAdmin;
-    }
-
-    /**
-     * @return the propsFile
-     */
-    public static String getPropsFile() {
-        return propsFile;
-    }
-
-    /**
-     * @return the props
-     */
-    public static Properties getProps() {
-        return props;
-    }
-
-    /**
-     * @param props the props to set
-     */
-    public static void setPropsFile(String file) {
-        Session.propsFile = file;
     }
 
 }
