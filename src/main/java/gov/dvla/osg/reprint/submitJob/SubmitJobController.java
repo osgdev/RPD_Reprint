@@ -305,13 +305,13 @@ public class SubmitJobController {
 					});
 				} catch (ProcessingException e) {
 					Platform.runLater(() -> {
-						LOGGER.error("Unable to transmit data file.");
-						setGeneralError("Unable to transmit data file.\nContact Dev Team if problem persists.");
+						LOGGER.error("Unable to transmit data file. [{}]", e.getMessage());
+						setGeneralError("Unable to transmit data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
 				} catch (IOException e) {
 					Platform.runLater(() -> {
-						LOGGER.error("Unable to create data file.");
-						setGeneralError("Unable to create data file.\nContact Dev Team if problem persists.");
+						LOGGER.error("Unable to create data file. [{}]", e.getMessage());
+						setGeneralError("Unable to create data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
 				} catch (Exception e) {
 					Platform.runLater(() -> {
