@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +25,7 @@ import javafx.stage.Stage;
  * 
  * ***************************** VERSION HISTORY ********************************************************** 
  * VERSION       DATE         DEVELOPER         DESCRIPTION
+ * 4.0.5   -  10/05/2018 - Pete Broomhall - Removed the App Credentials temporary fix for submitting files
  * 4.0.4   -  23/04/2018 - Pete Broomhall - Added log4j and changed appCredentials to read from config file
  * 4.0.3   -  07/02/2018 - Pete Broomhall - Added Card Types dropdown menu to card tab
  * 4.0.2   -  18/01/2018 - Pete Broomhall - Application given its own credentials in RPD - Username = ReprintApp
@@ -33,13 +33,13 @@ import javafx.stage.Stage;
  * ********************************************************************************************************
  * 
  * @author Pete Broomhall
- * @version 4.0.4
+ * @version 4.0.5
  */
 public class Main extends Application {
 	
 	static final Logger LOGGER = LogManager.getLogger();
 	
-	private static final String APPLICATION_VERSION = "4.0.4";
+	private static final String APPLICATION_VERSION = "4.0.5";
 	public static final boolean DEBUG_MODE = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
 	
 	@Override
@@ -54,16 +54,15 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		//System.out.println("In debug : " + DEBUG_MODE);
-		Session.props = new Properties();
 		
 		try {
 			if (args.length != 1) {
 				LOGGER.fatal("Incorrect number of args, Usage: {file}.jar {properties_filepath}");
 				System.exit(1);
 			} else {
-				Session.propsFile = args[0];
-				if (!(new File(Session.propsFile).exists())) {
-					LOGGER.fatal("Props file '" + Session.propsFile + " doesn't exist!");
+				Session.setPropsFile(args[0]);
+				if (!(new File(Session.getPropsFile()).exists())) {
+					LOGGER.fatal("Props file '" + Session.getPropsFile() + " doesn't exist!");
 					System.exit(1);
 				} else {
 					setProperties();
@@ -81,7 +80,7 @@ public class Main extends Application {
 	private static void setProperties() {
 		try {
 			// decrypt file
-			 byte[] fileContents = Files.readAllBytes(Paths.get(Session.propsFile));
+			 byte[] fileContents = Files.readAllBytes(Paths.get(Session.getPropsFile()));
 			 byte[] decryptedBytes = Cryptifier.decrypt(fileContents);
 			
 			/**********************FOR TESTING ONLY******************************
@@ -96,7 +95,7 @@ public class Main extends Application {
 			
 			// load properties file
 			InputStream reader = new ByteArrayInputStream(decryptedBytes);
-			Session.props.load(reader);
+			Session.getProps().load(reader);
 		} catch (IOException ex) {
 			LOGGER.fatal("Unable to load application properties.");
 			System.exit(1);

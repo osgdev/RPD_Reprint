@@ -1,6 +1,6 @@
 package gov.dvla.osg.reprint.login;
 
-import static gov.dvla.osg.reprint.models.Session.*;
+import java.util.Properties;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
@@ -27,7 +27,7 @@ public class LogIn {
     private String errorCode = "";
 
     public void login() {
-
+        Properties props = Session.getProps();
         String url = props.getProperty("protocol") 
         		+ props.getProperty("host") + ":" + props.getProperty("port")
                 + props.getProperty("loginUrl");
@@ -37,7 +37,7 @@ public class LogIn {
         	LOGGER.debug(response.toString());
         	String data = response.readEntity(String.class); 
             if (response.getStatus() == 200) {
-            	Session.token = JsonUtils.getTokenFromJson(data);
+            	Session.setToken(JsonUtils.getTokenFromJson(data));
             } else {
             	// RPD provides clear error information, and so is mapped to model
                 LoginBadResponseModel br = new GsonBuilder().create().fromJson(data, LoginBadResponseModel.class);

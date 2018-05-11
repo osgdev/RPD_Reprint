@@ -1,13 +1,14 @@
 package gov.dvla.osg.reprint.login;
 
-import static gov.dvla.osg.reprint.models.Session.props;
-import static gov.dvla.osg.reprint.utils.ErrorHandler.ErrorMsg;
+import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.util.Optional;
+import java.util.Properties;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
 
+import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.network.RestClient;
 import gov.dvla.osg.reprint.utils.ErrorHandler;
 import javafx.application.Platform;
@@ -39,6 +40,7 @@ public class LogOut {
 
 		// logout if user clicks the OK button
 		if (result.isPresent() && result.get() == ButtonType.OK) {
+		    Properties props = Session.getProps();
 			String url = props.getProperty("protocol") + props.getProperty("host") + ":" + props.getProperty("port")
 					+ props.getProperty("logoutUrl");
 

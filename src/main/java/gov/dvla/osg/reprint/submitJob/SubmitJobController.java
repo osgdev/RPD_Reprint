@@ -1,6 +1,5 @@
 package gov.dvla.osg.reprint.submitJob;
 
-import static gov.dvla.osg.reprint.models.Session.*;
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.IOException;
@@ -83,7 +82,7 @@ public class SubmitJobController {
 	@FXML
 	public void initialize() {
 		// show admin button only for developers
-		if (Session.isAdmin != null && Session.isAdmin) {
+		if (Session.getIsAdmin() != null && Session.getIsAdmin()) {
 			menuAdmin.setVisible(true);
 		}
 		// set up the General tab
@@ -91,13 +90,13 @@ public class SubmitJobController {
 		mode = "single";
 		
 		// load dropdown lists in Cards tab
-		chboxApp.setItems(FXCollections.observableArrayList(Arrays.asList(props.getProperty("appTypes").split(","))));
-		chboxCardType.setItems(FXCollections.observableArrayList(Arrays.asList(props.getProperty("cardTypes").split(","))));
-		chboxSite.setItems(FXCollections.observableArrayList(Arrays.asList(props.getProperty("sites").split(","))));
+		chboxApp.setItems(FXCollections.observableArrayList(Arrays.asList(Session.getProps().getProperty("appTypes").split(","))));
+		chboxCardType.setItems(FXCollections.observableArrayList(Arrays.asList(Session.getProps().getProperty("cardTypes").split(","))));
+		chboxSite.setItems(FXCollections.observableArrayList(Arrays.asList(Session.getProps().getProperty("sites").split(","))));
 		jList.setItems(model);
 		
 		// load dropdown list in HAL tab
-		chHalSite.setItems(FXCollections.observableArrayList(Arrays.asList(props.getProperty("sites").split(","))));
+		chHalSite.setItems(FXCollections.observableArrayList(Arrays.asList(Session.getProps().getProperty("sites").split(","))));
 
 		// Set focus for form
 		Platform.runLater(() -> txtSingle.requestFocus());
@@ -196,7 +195,7 @@ public class SubmitJobController {
 	 */
 	public void openAdmin() {
 
-		if (Session.isAdmin != null && Session.isAdmin) {
+		if (Session.getIsAdmin() != null && Session.getIsAdmin()) {
 			try {
 				// credentials accepted - load admin page
 				Parent root = FXMLLoader.load(getClass().getResource("/FXML/AdminGui.fxml"));
@@ -225,7 +224,7 @@ public class SubmitJobController {
 		// contact RPD on background thread to prevent main window from freezing
 		new Thread(() -> {
 			Platform.runLater(() -> {
-				String workingDir = props.getProperty("reprintWorkingDir");
+				String workingDir = Session.getProps().getProperty("reprintWorkingDir");
 				int daysBack = 14;
 				FileUtils.deleteFilesOlderThanNdays(workingDir, daysBack);
 				LogOut.logout();
@@ -288,9 +287,9 @@ public class SubmitJobController {
 						noOfRecords += reprint.getNoOfRecords();
 					}
 					// write data to files and send
-					fileHandler.setFileNames(props.getProperty("fileNamePrefixGeneral"));
+					fileHandler.setFileNames(Session.getProps().getProperty("fileNamePrefixGeneral"));
 					fileHandler.setDatFileContent(datFileContent);
-					fileHandler.setEotFileContent("RUNVOL=" + noOfRecords + "\nUSER=" + Session.userName);
+					fileHandler.setEotFileContent("RUNVOL=" + noOfRecords + "\nUSER=" + Session.getUserName());
 					fileHandler.submit();
 					// write pdf report to disk
 					Report.writePDFreport(report);
@@ -359,12 +358,12 @@ public class SubmitJobController {
 			new Thread(() -> {
 				try {
 					// write data to files and send
-					fileHandler.setFileNames(props.getProperty("fileNamePrefixCards"));
+					fileHandler.setFileNames(Session.getProps().getProperty("fileNamePrefixCards"));
 					fileHandler.setDatFileContent("");
 					// write data to eot file
 					fileHandler.setEotFileContent("APP=" + selectedApp + "\nCARDTYPE=" + selectedCardType 
 							+ "\nLOCATION=" + selectedSite + "\nUSER="
-							+ Session.userName + "\nRUNNO=" + runNo);
+							+ Session.getUserName() + "\nRUNNO=" + runNo);
 					fileHandler.submit();
 
 					Platform.runLater(() -> {
@@ -418,10 +417,10 @@ public class SubmitJobController {
 			new Thread(() -> {
 				try {
 					// write data to files and send
-					fileHandler.setFileNames(props.getProperty("fileNamePrefixHal"));
+					fileHandler.setFileNames(Session.getProps().getProperty("fileNamePrefixHal"));
 					fileHandler.setDatFileContent("");
 					fileHandler.setEotFileContent(
-							"WID=" + workflowId + "\nLOCATION=" + selectedSite + "\nUSER=" + Session.userName);
+							"WID=" + workflowId + "\nLOCATION=" + selectedSite + "\nUSER=" + Session.getUserName());
 					fileHandler.submit();
 
 					Platform.runLater(() -> {

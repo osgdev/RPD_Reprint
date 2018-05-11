@@ -1,6 +1,5 @@
 package gov.dvla.osg.reprint.submitJob;
 
-import static gov.dvla.osg.reprint.models.Session.*;
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.File;
@@ -16,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 
+import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.network.RestClient;
 import javafx.application.Platform;
 
@@ -31,9 +31,9 @@ public class Job {
      */
     public static void submit(String filename) throws Exception {
 
-        String url = props.getProperty("protocol") 
-        		+ props.getProperty("host") + ":" + props.getProperty("port")
-                + props.getProperty("submitJobUrl");
+        String url = Session.getProps().getProperty("protocol") 
+        		+ Session.getProps().getProperty("host") + ":" + Session.getProps().getProperty("port")
+                + Session.getProps().getProperty("submitJobUrl");
 
         try {
         	// construct html body with file as attachment

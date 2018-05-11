@@ -42,10 +42,10 @@ public class LoginController {
 	 */
 	public void btnLoginClicked() {
 
-		Session.userName = nameField.getText().trim();
-		Session.password = passwordField.getText().trim();
+		Session.setUserName(nameField.getText().trim());
+		Session.setPassword(passwordField.getText().trim());
 		// Enable admin window to be loaded so Devs can set IP address prior to logon
-		if (Session.userName.equals("dev") && Session.password.equals("@Devteam2")) {
+		if (Session.getUserName().equals("dev") && Session.getPassword().equals("@Devteam2")) {
 			try {
 				// close login page and load admin view
 				Parent root = FXMLLoader.load(getClass().getResource("/FXML/AdminGui.fxml"));
@@ -76,7 +76,7 @@ public class LoginController {
 					login.login();
 				}
 				// if token wasn't retrieved & not in debug mode, display error dialog
-				if (Strings.nullToEmpty(Session.token).isEmpty() && !Main.DEBUG_MODE) {
+				if (Strings.nullToEmpty(Session.getToken()).isEmpty() && !Main.DEBUG_MODE) {
 					Platform.runLater(() -> {
 						ErrorMsg(login.getErrorCode(), login.getErrorMessage(), login.getErrorAction());
 						// cleanup fields
@@ -100,7 +100,7 @@ public class LoginController {
 							Stage submitJobStage = new Stage();
 							submitJobStage.setResizable(false);
 							// Display logged in user in titlebar
-							submitJobStage.setTitle("RPD Reprints - " + Session.userName);
+							submitJobStage.setTitle("RPD Reprints - " + Session.getUserName());
 							submitJobStage.getIcons()
 									.add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
 							submitJobStage.setScene(new Scene(root));

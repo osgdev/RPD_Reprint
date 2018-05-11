@@ -16,13 +16,13 @@ public class AppCredentials {
     private final String userName = "ReprintApp";
     private final String password ="@Juliet1234";
     private String token = "";
-    private String passwordsFile = "C:\\Users\\OSG\\Documents\\eclipse\\resources\\ConfigFiles\\appCreds.txt";
+    private String passwordsFile = "";
     
     {
     	if (Main.DEBUG_MODE) {
     		passwordsFile = "C:\\Users\\OSG\\Documents\\eclipse\\resources\\ConfigFiles\\appCreds.txt";
     	} else {
-    		passwordsFile = "J:\\OSG\\OIs\\RPD\\config.txt";
+    		passwordsFile = "\\OSG\\OIs\\RPD\\config.txt";
     	}
     }
     

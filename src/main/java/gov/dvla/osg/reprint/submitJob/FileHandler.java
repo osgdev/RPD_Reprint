@@ -1,12 +1,12 @@
 package gov.dvla.osg.reprint.submitJob;
 
-import static gov.dvla.osg.reprint.models.Session.props;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import gov.dvla.osg.reprint.models.Session;
 
 /**
  * Constructs the dat and eot files in a temporary folder and then sends them to RPD.
@@ -28,9 +28,8 @@ public class FileHandler {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
         String timestamp = now.format(formatter);
-
-        datFileName = props.getProperty("reprintWorkingDir") + prefix + timestamp + ".DAT";
-        eotFileName = props.getProperty("reprintWorkingDir") + prefix + timestamp + ".EOT";
+        datFileName = Session.getProps().getProperty("reprintWorkingDir") + prefix + timestamp + ".DAT";
+        eotFileName = Session.getProps().getProperty("reprintWorkingDir") + prefix + timestamp + ".EOT";
     }
     
 	/**

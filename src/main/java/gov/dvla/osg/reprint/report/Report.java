@@ -1,6 +1,5 @@
 package gov.dvla.osg.reprint.report;
 
-import static gov.dvla.osg.reprint.models.Session.*;
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.awt.Desktop;
@@ -13,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Properties;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -39,7 +39,8 @@ public class Report {
 	        LocalDateTime now = LocalDateTime.now();
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
 	        String timestamp = now.format(formatter);
-			String fName = props.getProperty("reportWorkingDir") + props.getProperty("fileNamePrefixReport") + Session.userName + "." + timestamp + ".pdf";
+	        Properties props = Session.getProps();
+			String fName = props.getProperty("reportWorkingDir") + props.getProperty("fileNamePrefixReport") + Session.getUserName() + "." + timestamp + ".pdf";
 			// see if report file aready exists
 			File checkFile = new File(fName);
 			if (checkFile.exists()) {
@@ -58,7 +59,7 @@ public class Report {
 				Date date = new Date();
 				// add the report headng
 				p.add("Document Reprint - Scanned jobs");
-				p.add("\n\nScanned on " + df.format(date) + " by " + Session.userName + ":\n\n");
+				p.add("\n\nScanned on " + df.format(date) + " by " + Session.getUserName() + ":\n\n");
 				// add the report content
 				for (String str : reportContent) {
 					p.add("\n     " + str);

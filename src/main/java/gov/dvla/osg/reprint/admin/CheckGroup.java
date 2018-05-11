@@ -1,7 +1,8 @@
 package gov.dvla.osg.reprint.admin;
 
-import static gov.dvla.osg.reprint.models.Session.*;
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
+
+import java.util.Properties;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
@@ -24,14 +25,16 @@ public class CheckGroup {
 	
 	public static void CheckIfAdmin() {
 		
+	    Properties props = Session.getProps();
+	    
 		String url = props.getProperty("protocol") 
 				+ props.getProperty("host") + ":" + props.getProperty("port")
-				+ props.getProperty("userUrl") + Session.userName;
+				+ props.getProperty("userUrl") + Session.getUserName();
 		
 		try (Response response = RestClient.rpdGroup(url)) {
 			if (response.getStatus() == 200) {
 				String jsonData = response.readEntity(String.class);
-				Session.isAdmin = JsonUtils.isUserInDevGroup(jsonData);
+				Session.setIsAdmin(JsonUtils.isUserInDevGroup(jsonData));
 			} else {
 				// thrown exception prevents main window from opening.
 				String msg = "Null response from RPD web server.";

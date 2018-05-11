@@ -1,7 +1,5 @@
 package gov.dvla.osg.reprint.network;
 
-import static gov.dvla.osg.reprint.models.Session.*;
-
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
@@ -12,9 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-import gov.dvla.osg.reprint.models.AppCredentials;
 import gov.dvla.osg.reprint.models.Session;
-import gov.dvla.osg.reprint.utils.JsonUtils;
 
 /**
  * Utility methods to transmit messages to the RPD REST service.
@@ -34,8 +30,8 @@ public class RestClient {
 		//Note: unencrypted credentials is a requirement of the RPD RESTAPI
 		return ClientBuilder.newClient()
 							.target(url)
-							.queryParam("name", Session.userName)
-							.queryParam("pwd", Session.password)
+							.queryParam("name", Session.getUserName())
+							.queryParam("pwd", Session.getPassword())
 							.request(MediaType.APPLICATION_JSON)
 							.get();
 	}
@@ -52,7 +48,7 @@ public class RestClient {
 							.target(url)
 							.queryParam("attribute", "User.Groups")
 							.request(MediaType.APPLICATION_JSON)
-							.header("token", Session.token)
+							.header("token", Session.getToken())
 							.get();
 	}
 
@@ -63,37 +59,13 @@ public class RestClient {
 	 * @return 202 status code if file was transmitted successfully
 	 */
 	public static Response rpdSubmit(String url, MultiPart multiPart) {
-		
-		/*********** Retrieve token for the AIW user ****************/
-		AppCredentials appCredentials = null;
 
-		try {
-			String loginUrl = props.getProperty("protocol") 
-					+ props.getProperty("host") + ":" + props.getProperty("port")
-			        + props.getProperty("loginUrl");
-			
-			appCredentials = new AppCredentials();
-			
-			Response response = ClientBuilder.newClient()
-				.target(loginUrl)
-				.queryParam("name", appCredentials.getUsername())
-				.queryParam("pwd", appCredentials.getPassword())
-				.request(MediaType.APPLICATION_JSON)
-				.get();
-			
-			String data = response.readEntity(String.class);
-			appCredentials.setToken(JsonUtils.getTokenFromJson(data));
-		} catch (Exception ex) {
-			LOGGER.fatal("Unable to log Application into RPD. Check password is valid.", ex.getMessage());
-		}
-		/**********************************************************/
-		
-		// Send file using AIW user's token
+		// Send file using the user's token
 		return ClientBuilder.newClient()
 				.register(MultiPartFeature.class)
 				.target(url)
 				.request(MediaType.APPLICATION_JSON)
-		        .header("ippdcredential", "<credential token='" + appCredentials.getToken() + "'/>")
+		        .header("ippdcredential", "<credential token='" + Session.getToken() + "'/>")
 		        .post(Entity.entity(multiPart, multiPart.getMediaType()));
 	}
 	
@@ -104,9 +76,9 @@ public class RestClient {
 	 */
 	public static Response rpdLogOut(String url) {
 		return ClientBuilder.newClient().target(url)
-				.path(Session.userName)
+				.path(Session.getUserName())
 				.request(MediaType.APPLICATION_JSON)
-				.header("token", Session.token)
+				.header("token", Session.getToken())
 				.post(null);
 	}
 }
