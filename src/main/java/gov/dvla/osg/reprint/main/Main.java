@@ -43,6 +43,7 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+	    LOGGER.trace("Loading GUI...");
 		Parent root = FXMLLoader.load(getClass().getResource("/FXML/LoginGui.fxml"));
 		primaryStage.setTitle("RPD Reprints " + APPLICATION_VERSION);
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
@@ -53,7 +54,7 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		//System.out.println("In debug : " + DEBUG_MODE);
-		
+	    LOGGER.trace("Starting App...");
 		try {
 			if (args.length != 1) {
 				LOGGER.fatal("Incorrect number of args, Usage: {file}.jar {properties_filepath}");
