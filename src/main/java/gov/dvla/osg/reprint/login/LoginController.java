@@ -53,7 +53,7 @@ public class LoginController {
 				adminJobStage.setResizable(true);
 				adminJobStage.setTitle("RPD Reprints");
 				adminJobStage.getIcons().add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
-				adminJobStage.setScene(new Scene(root, 600, 700));
+				adminJobStage.setScene(new Scene(root));
 				adminJobStage.show();
 				closeLogin();
 			} catch (IOException e) {
