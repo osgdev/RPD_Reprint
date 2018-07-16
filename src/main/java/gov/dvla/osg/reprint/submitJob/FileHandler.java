@@ -1,9 +1,6 @@
 package gov.dvla.osg.reprint.submitJob;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -64,7 +61,7 @@ public class FileHandler {
             }
         } else {
             // no write access
-            throw new IOException("User '" + Session.getUserName() + "' does not have write permission to " + f.getParent() + ".");
+            throw new IOException("User '" + Session.getInstance().getUserName() + "' does not have write permission to " + f.getParent() + ".");
         }
     }
 

@@ -4,65 +4,82 @@ package gov.dvla.osg.reprint.models;
  * Session information for the logged in user.
  */
 public class Session {
-    private static String userName;
-    private static String password;
-    private static String token;
-    private static Boolean isAdmin;
+    
+    /******************************************************************************************
+     *                              SINGLETON PATTERN
+     ******************************************************************************************/
+
+    private static class SingletonHelper {
+        private static final Session INSTANCE = new Session();
+    }
+
+    public static Session getInstance() {
+        return SingletonHelper.INSTANCE;
+    }
+    
+    private Session() { }
+    
+    /*****************************************************************************************/
+    
+    private String userName;
+    private String password;
+    private String token;
+    private Boolean isAdmin;
 
     /**
      * @return the userName
      */
-    public static String getUserName() {
+    public String getUserName() {
         return userName;
     }
 
     /**
      * @param userName the userName to set
      */
-    public static void setUserName(String userName) {
-        Session.userName = userName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     /**
      * @return the password
      */
-    public static String getPassword() {
+    public String getPassword() {
         return password;
     }
 
     /**
      * @param password the password to set
      */
-    public static void setPassword(String password) {
-        Session.password = password;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /**
      * @return the token
      */
-    public static String getToken() {
+    public String getToken() {
         return token;
     }
 
     /**
      * @param token the token to set
      */
-    public static void setToken(String token) {
-        Session.token = token;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     /**
      * @return the isAdmin
      */
-    public static Boolean getIsAdmin() {
+    public Boolean getIsAdmin() {
         return isAdmin;
     }
 
     /**
      * @param isAdmin the isAdmin to set
      */
-    public static void setIsAdmin(Boolean isAdmin) {
-        Session.isAdmin = isAdmin;
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
 }

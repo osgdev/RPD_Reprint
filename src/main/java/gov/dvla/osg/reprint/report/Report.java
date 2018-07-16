@@ -39,7 +39,7 @@ public class Report {
 	        LocalDateTime now = LocalDateTime.now();
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss");
 	        String timestamp = now.format(formatter);
-			String fName = Config.getReportWorkingDir() + Config.getFileNamePrefixReport() + Session.getUserName() + "." + timestamp + ".pdf";
+			String fName = Config.getReportWorkingDir() + Config.getFileNamePrefixReport() + Session.getInstance().getUserName() + "." + timestamp + ".pdf";
 			// see if report file aready exists
 			File checkFile = new File(fName);
 			if (checkFile.exists()) {
@@ -58,7 +58,7 @@ public class Report {
 				Date date = new Date();
 				// add the report headng
 				p.add("Document Reprint - Scanned jobs");
-				p.add("\n\nScanned on " + df.format(date) + " by " + Session.getUserName() + ":\n\n");
+				p.add("\n\nScanned on " + df.format(date) + " by " + Session.getInstance().getUserName() + ":\n\n");
 				// add the report content
 				for (String str : reportContent) {
 					p.add("\n     " + str);

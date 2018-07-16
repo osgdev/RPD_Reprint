@@ -24,12 +24,12 @@ public class CheckGroup {
 	
 	public static void CheckIfAdmin() {
 			    
-		String url = Config.getProtocol() + Config.getHost() + ":" + Config.getPort() + Config.getUserUrl() + Session.getUserName();
+		String url = Config.getProtocol() + Config.getHost() + ":" + Config.getPort() + Config.getUserUrl() + Session.getInstance().getUserName();
 		
 		try (Response response = RestClient.rpdGroup(url)) {
 			if (response.getStatus() == 200) {
 				String jsonData = response.readEntity(String.class);
-				Session.setIsAdmin(JsonUtils.isUserInDevGroup(jsonData));
+				Session.getInstance().setIsAdmin(JsonUtils.isUserInDevGroup(jsonData));
 			} else {
 				// thrown exception prevents main window from opening.
 				String msg = "Null response from RPD web server.";

@@ -30,8 +30,8 @@ public class RestClient {
 		//Note: unencrypted credentials is a requirement of the RPD RESTAPI
 		return ClientBuilder.newClient()
 							.target(url)
-							.queryParam("name", Session.getUserName())
-							.queryParam("pwd", Session.getPassword())
+							.queryParam("name", Session.getInstance().getUserName())
+							.queryParam("pwd", Session.getInstance().getPassword())
 							.request(MediaType.APPLICATION_JSON)
 							.get();
 	}
@@ -48,7 +48,7 @@ public class RestClient {
 							.target(url)
 							.queryParam("attribute", "User.Groups")
 							.request(MediaType.APPLICATION_JSON)
-							.header("token", Session.getToken())
+							.header("token", Session.getInstance().getToken())
 							.get();
 	}
 
@@ -65,7 +65,7 @@ public class RestClient {
 				.register(MultiPartFeature.class)
 				.target(url)
 				.request(MediaType.APPLICATION_JSON)
-		        .header("ippdcredential", "<credential token='" + Session.getToken() + "'/>")
+		        .header("ippdcredential", "<credential token='" + Session.getInstance().getToken() + "'/>")
 		        .post(Entity.entity(multiPart, multiPart.getMediaType()));
 	}
 	
@@ -76,9 +76,9 @@ public class RestClient {
 	 */
 	public static Response rpdLogOut(String url) {
 		return ClientBuilder.newClient().target(url)
-				.path(Session.getUserName())
+				.path(Session.getInstance().getUserName())
 				.request(MediaType.APPLICATION_JSON)
-				.header("token", Session.getToken())
+				.header("token", Session.getInstance().getToken())
 				.post(null);
 	}
 }

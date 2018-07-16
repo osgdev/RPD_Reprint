@@ -34,7 +34,7 @@ public class LogIn {
         	LOGGER.debug(response.toString());
         	String data = response.readEntity(String.class); 
             if (response.getStatus() == 200) {
-            	Session.setToken(JsonUtils.getTokenFromJson(data));
+            	Session.getInstance().setToken(JsonUtils.getTokenFromJson(data));
             } else {
             	// RPD provides clear error information, and so is mapped to model
                 LoginBadResponseModel br = new GsonBuilder().create().fromJson(data, LoginBadResponseModel.class);

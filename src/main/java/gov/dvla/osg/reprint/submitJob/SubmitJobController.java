@@ -3,10 +3,7 @@ package gov.dvla.osg.reprint.submitJob;
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import javax.ws.rs.ProcessingException;
 
@@ -18,12 +15,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.Strings;
 
 import gov.dvla.osg.reprint.login.LogOut;
-import gov.dvla.osg.reprint.models.AbstractReprintType;
-import gov.dvla.osg.reprint.models.Config;
-import gov.dvla.osg.reprint.models.RangeReprint;
-import gov.dvla.osg.reprint.models.Session;
-import gov.dvla.osg.reprint.models.SingleReprint;
-import gov.dvla.osg.reprint.models.WholeBatchReprint;
+import gov.dvla.osg.reprint.models.*;
 import gov.dvla.osg.reprint.report.Report;
 import gov.dvla.osg.reprint.utils.ErrorHandler;
 import gov.dvla.osg.reprint.utils.FileUtils;
@@ -83,7 +75,7 @@ public class SubmitJobController {
 	@FXML
 	public void initialize() {
 		// show admin button only for developers
-		if (Session.getIsAdmin() != null && Session.getIsAdmin()) {
+		if (Session.getInstance().getIsAdmin() != null && Session.getInstance().getIsAdmin()) {
 			menuAdmin.setVisible(true);
 		}
 		// set up the General tab
@@ -196,7 +188,7 @@ public class SubmitJobController {
 	 */
 	public void openAdmin() {
 
-		if (Session.getIsAdmin() != null && Session.getIsAdmin()) {
+		if (Session.getInstance().getIsAdmin() != null && Session.getInstance().getIsAdmin()) {
 			try {
 				// credentials accepted - load admin page
 				Parent root = FXMLLoader.load(getClass().getResource("/FXML/AdminGui.fxml"));
@@ -289,7 +281,7 @@ public class SubmitJobController {
 					// write data to files and send
 					fileHandler.setFileNames(Config.getFileNamePrefixGeneral());
 					fileHandler.setDatFileContent(datFileContent);
-					fileHandler.setEotFileContent("RUNVOL=" + noOfRecords + "\nUSER=" + Session.getUserName());
+					fileHandler.setEotFileContent("RUNVOL=" + noOfRecords + "\nUSER=" + Session.getInstance().getUserName());
 					fileHandler.submit();
 					// write pdf report to disk
 					Report.writePDFreport(report);
@@ -363,7 +355,7 @@ public class SubmitJobController {
 					// write data to eot file
 					fileHandler.setEotFileContent("APP=" + selectedApp + "\nCARDTYPE=" + selectedCardType 
 							+ "\nLOCATION=" + selectedSite + "\nUSER="
-							+ Session.getUserName() + "\nRUNNO=" + runNo);
+							+ Session.getInstance().getUserName() + "\nRUNNO=" + runNo);
 					fileHandler.submit();
 
 					Platform.runLater(() -> {
@@ -423,7 +415,7 @@ public class SubmitJobController {
 					fileHandler.setFileNames(Config.getFileNamePrefixHal());
 					fileHandler.setDatFileContent("");
 					fileHandler.setEotFileContent(
-							"WID=" + workflowId + "\nLOCATION=" + selectedSite + "\nUSER=" + Session.getUserName());
+							"WID=" + workflowId + "\nLOCATION=" + selectedSite + "\nUSER=" + Session.getInstance().getUserName());
 					fileHandler.submit();
 
 					Platform.runLater(() -> {

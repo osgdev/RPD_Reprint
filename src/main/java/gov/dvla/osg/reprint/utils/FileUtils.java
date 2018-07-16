@@ -35,7 +35,7 @@ public class FileUtils {
 		if (!isDirectory) {
 		    LOGGER.fatal("Directory [{}] does not exist or is not accessible. Please check config file.", workingDir);
 		} else if (!isWritable) {
-		    LOGGER.fatal("User {} does not have permission to delete from {}", Session.getUserName(), workingDir);
+		    LOGGER.fatal("User {} does not have permission to delete from {}", Session.getInstance().getUserName(), workingDir);
 		} else {
     		try {
     			Files.list(Paths.get(workingDir))
