@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import gov.dvla.osg.reprint.models.Config;
-import gov.dvla.osg.reprint.models.Session;
+import uk.gov.dvla.osg.rpd.config.Session;
 
 /**
  * Constructs the dat and eot files in a temporary folder and then sends them to RPD. This enables admins to manually move files in the event that the REST service becomes unavailable.
@@ -65,12 +65,22 @@ public class FileHandler {
         }
     }
 
+    public String getDatFileName() {
+        return datFileName;
+    }
+    
+    public String getEotFileName() {
+        return eotFileName;
+    }
     /**
      * Files are in the temp folder and are ready to send to RPD.
      * @throws Exception
      */
-    public void submit() throws Exception {
-        Job.submit(datFileName);
-        Job.submit(eotFileName);
-    }
+/*    public void submit() {
+        SubmitJobClient client = SubmitJobClient.getInstance(NetworkConfig.getInstance());
+        boolean success = client.submit(datFileName);
+        if (success) {
+            client.submit(eotFileName);
+        }
+    }*/
 }

@@ -10,7 +10,8 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-import gov.dvla.osg.reprint.models.Session;
+import uk.gov.dvla.osg.rpd.config.Session;
+
 
 /**
  * Utility methods to transmit messages to the RPD REST service.

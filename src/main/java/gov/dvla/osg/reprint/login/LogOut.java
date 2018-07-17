@@ -4,11 +4,9 @@ import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.util.Optional;
 
-import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import gov.dvla.osg.reprint.models.Config;
-import gov.dvla.osg.reprint.network.RestClient;
 import gov.dvla.osg.reprint.utils.ErrorHandler;
 import javafx.application.Platform;
 import javafx.scene.control.ButtonType;
@@ -16,9 +14,14 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import uk.gov.dvla.osg.rpd.client.LogOutClient;
+import uk.gov.dvla.osg.rpd.config.NetworkConfig;
+import uk.gov.dvla.osg.rpd.error.RpdErrorResponse;
 
 public class LogOut {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+    
 	/**
 	 * Displays a confirmation dialog to the user to check they really do want to
 	 * log off. If user chooses OK, the application closes regardless of the
@@ -39,19 +42,13 @@ public class LogOut {
 
 		// logout if user clicks the OK button
 		if (result.isPresent() && result.get() == ButtonType.OK) {
-		    
-			String url = Config.getProtocol() + Config.getHost() + ":" + Config.getPort() + Config.getLogoutUrl();
-
-			try {
-				Response response = RestClient.rpdLogOut(url);
-				if (response.getStatus() != 200) {
-					ErrorMsg("Logout failed", "Unable to log user out of RPD web service.");
-				}
-			} catch (ProcessingException e) {
-				ErrorMsg("Connection timed out", "Unable to log user out of RPD web service.");
-			} catch (Exception e) {
-				ErrorMsg(e.getClass().getSimpleName(), e.getMessage());
-			}
+		    LogOutClient client = LogOutClient.getInstance(NetworkConfig.getInstance());
+		    boolean success = client.logOut();
+		    if (!success) {
+		        RpdErrorResponse errMsg = client.getErrorResponse();
+		        LOGGER.error("{} {} {} \n{}", errMsg.getCode(), errMsg.getMessage(), errMsg.getAction(), errMsg.getException());
+		        ErrorMsg(errMsg.getCode(), errMsg.getMessage(), errMsg.getAction());
+		    }
 			// quits the application after error dialogs closed
 			Platform.exit();
 		}

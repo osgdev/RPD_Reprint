@@ -8,7 +8,6 @@ import java.util.*;
 import javax.ws.rs.ProcessingException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,6 +31,10 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import uk.gov.dvla.osg.rpd.client.SubmitJobClient;
+import uk.gov.dvla.osg.rpd.config.NetworkConfig;
+import uk.gov.dvla.osg.rpd.config.Session;
+import uk.gov.dvla.osg.rpd.error.RpdErrorResponse;
 
 /**
  * Controller for the main screen.
@@ -39,7 +42,7 @@ import javafx.stage.Stage;
  */
 public class SubmitJobController {
 	
-	static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger();
 	
 	// Objects on the General tab
 	public Tab tabGeneral;
@@ -69,13 +72,14 @@ public class SubmitJobController {
 	private String mode;
 	private FileHandler fileHandler = new FileHandler();
 
+
 	/**
 	 * Initialize list items when form loads.
 	 */
 	@FXML
 	public void initialize() {
 		// show admin button only for developers
-		if (Session.getInstance().getIsAdmin() != null && Session.getInstance().getIsAdmin()) {
+		if (Session.getInstance().isAdmin()) {
 			menuAdmin.setVisible(true);
 		}
 		// set up the General tab
@@ -188,7 +192,7 @@ public class SubmitJobController {
 	 */
 	public void openAdmin() {
 
-		if (Session.getInstance().getIsAdmin() != null && Session.getInstance().getIsAdmin()) {
+		if (Session.getInstance().isAdmin()) {
 			try {
 				// credentials accepted - load admin page
 				Parent root = FXMLLoader.load(getClass().getResource("/FXML/AdminGui.fxml"));
@@ -282,7 +286,7 @@ public class SubmitJobController {
 					fileHandler.setFileNames(Config.getFileNamePrefixGeneral());
 					fileHandler.setDatFileContent(datFileContent);
 					fileHandler.setEotFileContent("RUNVOL=" + noOfRecords + "\nUSER=" + Session.getInstance().getUserName());
-					fileHandler.submit();
+					submit();
 					// write pdf report to disk
 					Report.writePDFreport(report);
 
@@ -305,10 +309,9 @@ public class SubmitJobController {
 						LOGGER.error("Unable to create reprint data file. [{}]", e.getMessage());
 						setGeneralError("Unable to create data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
-				} catch (Exception e) {
+				} catch (RuntimeException e) {
 					Platform.runLater(() -> {
-						LOGGER.error("Unable to transmit reprint data file. {}", ExceptionUtils.getStackTrace(e));
-						setGeneralError("Unable to transmit reprint data file. " + e.getMessage());
+						setGeneralError("Unable to transmit reprint data file.");
 					});
 				} finally {
 					enableButtons();
@@ -356,7 +359,7 @@ public class SubmitJobController {
 					fileHandler.setEotFileContent("APP=" + selectedApp + "\nCARDTYPE=" + selectedCardType 
 							+ "\nLOCATION=" + selectedSite + "\nUSER="
 							+ Session.getInstance().getUserName() + "\nRUNNO=" + runNo);
-					fileHandler.submit();
+					submit();
 
 					Platform.runLater(() -> {
 						// cleanup fields
@@ -375,10 +378,9 @@ public class SubmitJobController {
 					    LOGGER.error("Unable to create reprint data file. [{}]", e.getMessage());
                         setCardError("Unable to create data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
-				} catch (Exception e) {
+				} catch (RuntimeException e) {
 					Platform.runLater(() -> {
-					    LOGGER.error("Unable to transmit reprint data file. {}", ExceptionUtils.getStackTrace(e));
-                        setCardError("Unable to transmit reprint data file. " + e.getMessage());
+                        setCardError("Unable to transmit reprint data file.");
 					});
 				} finally {
 					enableButtons();
@@ -416,7 +418,7 @@ public class SubmitJobController {
 					fileHandler.setDatFileContent("");
 					fileHandler.setEotFileContent(
 							"WID=" + workflowId + "\nLOCATION=" + selectedSite + "\nUSER=" + Session.getInstance().getUserName());
-					fileHandler.submit();
+					submit();
 
 					Platform.runLater(() -> {
 						// cleanup fields
@@ -436,10 +438,10 @@ public class SubmitJobController {
 					    LOGGER.error("Unable to create reprint data file. [{}]", e.getMessage());
                         setHalError("Unable to create data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
 					});
-				} catch (Exception e) {
+				} catch (RuntimeException e) {
 					Platform.runLater(() -> {
-					    LOGGER.error("Unable to transmit reprint data file. {}", ExceptionUtils.getStackTrace(e));
-                        setHalError("Unable to transmit reprint data file. " + e.getMessage());
+					    LOGGER.error("Unable to transmit reprint data file.");
+                        setHalError("Unable to transmit reprint data file.");
 					});
 				} finally {
 					enableButtons();
@@ -448,6 +450,35 @@ public class SubmitJobController {
 		}
 	}
 
+	 /**
+     * Files are in the temp folder and are ready to send to RPD.
+     * @throws Exception
+     */
+    private void submit() throws RuntimeException {
+        SubmitJobClient client = SubmitJobClient.getInstance(NetworkConfig.getInstance());
+        boolean success = client.submit(fileHandler.getDatFileName());
+        
+        if (!success) {
+            Platform.runLater(() -> {
+                LOGGER.error("Unable to transmit reprint data file. {}", client.getErrorResponse().getException());
+                RpdErrorResponse errMsg = client.getErrorResponse();
+                ErrorMsg(errMsg.getCode(), errMsg.getMessage(), errMsg.getAction());
+            });
+            throw new RuntimeException();
+        }
+        
+        success =  client.submit(fileHandler.getEotFileName());
+        
+        if (!success) {
+            Platform.runLater(() -> {
+                LOGGER.error("Unable to transmit reprint data file. {}", client.getErrorResponse().getException());
+                RpdErrorResponse errMsg = client.getErrorResponse();
+                ErrorMsg(errMsg.getCode(), errMsg.getMessage(), errMsg.getAction());
+            });
+            throw new RuntimeException();
+        }
+    }
+    
 	/**
 	 * Check values are for the same job.
 	 * 

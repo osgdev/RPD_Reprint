@@ -18,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import uk.gov.dvla.osg.rpd.config.NetworkConfig;
 
 /**
  * Send details of wrecks and reprints batches to RPD.
@@ -67,6 +68,13 @@ public class Main extends Application {
 				} else {
 					setProperties();
 				}
+                String networkConfigFile = args[1];
+                if (!(new File(networkConfigFile).exists())) {
+                    LOGGER.fatal("Props file '" + networkConfigFile + " doesn't exist!");
+                    System.exit(1);
+                } else {
+                    NetworkConfig.init(networkConfigFile);
+                }
 			}
 			launch(args);
 		} catch (Exception e) {

@@ -3,15 +3,13 @@ package gov.dvla.osg.reprint.login;
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.common.base.Strings;
-
-import gov.dvla.osg.reprint.admin.CheckGroup;
 import gov.dvla.osg.reprint.main.Main;
-import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.submitJob.SubmitJobController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -20,6 +18,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import uk.gov.dvla.osg.rpd.client.CheckGroupClient;
+import uk.gov.dvla.osg.rpd.client.LoginClient;
+import uk.gov.dvla.osg.rpd.config.NetworkConfig;
+import uk.gov.dvla.osg.rpd.config.Session;
+import uk.gov.dvla.osg.rpd.error.RpdErrorResponse;
 
 /**
  * Form methods and authentication.
@@ -63,19 +66,21 @@ public class LoginController {
 			nameField.setDisable(true);
 			passwordField.setDisable(true);
 
-			final LogIn login = new LogIn();
+			final LoginClient login = LoginClient.getInstance(NetworkConfig.getInstance());
 
 			// Login performed on background thread to prevent GUI freezing
 			new Thread(() -> {
 				LOGGER.trace("Attempting to login...");
 				// bypass login while testing
+				Optional<String> token = Optional.empty();
 				if (!Main.DEBUG_MODE) {
-					login.login();
+					token = login.getSessionToken(Session.getInstance().getUserName(), Session.getInstance().getPassword());
 				}
 				// if token wasn't retrieved & not in debug mode, display error dialog
-				if (Strings.nullToEmpty(Session.getInstance().getToken()).isEmpty() && !Main.DEBUG_MODE) {
-					Platform.runLater(() -> {
-						ErrorMsg(login.getErrorCode(), login.getErrorMessage(), login.getErrorAction());
+				if (!token.isPresent() && !Main.DEBUG_MODE) {
+				    Platform.runLater(() -> {
+					    RpdErrorResponse errMsg = login.getErrorResponse();
+						ErrorMsg(errMsg.getCode(), errMsg.getMessage(), errMsg.getAction());
 						// cleanup fields
 						lblMessage.setText("");
 						passwordField.setText("");
@@ -85,33 +90,45 @@ public class LoginController {
 					});
 				} else {
 					LOGGER.trace("Login Complete.");
+					Session.getInstance().setToken(token.get());
+
 					Platform.runLater(() -> {
-						try {
-							// bypass group check if running in debug mode
-							if (!Main.DEBUG_MODE) {
-								CheckGroup.CheckIfAdmin();
-							}
+					    Optional<Boolean> isAdmin = Optional.empty();	
+					    CheckGroupClient client = null;
+					    // bypass group check if running in debug mode
+						if (!Main.DEBUG_MODE) {
+							client = CheckGroupClient.getInstance(NetworkConfig.getInstance());
+							isAdmin = client.IsUserAdmin();
+						}
+						if (isAdmin.isPresent()) {
+						    Session.getInstance().setIsAdmin(isAdmin.get());
 							// close login page and load main view
 							FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/SubmitJobGui.fxml"));
-							Parent root = loader.load();
-							Stage submitJobStage = new Stage();
-							submitJobStage.setResizable(false);
-							// Display logged in user in titlebar
-							submitJobStage.setTitle("RPD Reprints - " + Session.getInstance().getUserName());
-							submitJobStage.getIcons()
-									.add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
-							submitJobStage.setScene(new Scene(root));
-							submitJobStage.show();
-							// force logout by routing the close request to the logout method
-							submitJobStage.setOnCloseRequest(we -> {
-								we.consume();
-								((SubmitJobController)loader.getController()).logout();
-							});
-							closeLogin();
-						} catch (IOException e) {
-							Platform.runLater(() -> {
-								ErrorMsg(e.getClass().getSimpleName(), e.getMessage());
-							});
+							Parent root;
+                            try {
+                                root = loader.load();
+                                Stage submitJobStage = new Stage();
+                                submitJobStage.setResizable(false);
+                                // Display logged in user in titlebar
+                                submitJobStage.setTitle("RPD Reprints - " + Session.getInstance().getUserName());
+                                submitJobStage.getIcons()
+                                        .add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
+                                submitJobStage.setScene(new Scene(root));
+                                submitJobStage.show();
+                                // force logout by routing the close request to the logout method
+                                submitJobStage.setOnCloseRequest(we -> {
+                                    we.consume();
+                                    ((SubmitJobController)loader.getController()).logout();
+                                });
+                                closeLogin();
+                            } catch (IOException ex) {
+                                LOGGER.fatal(ExceptionUtils.getStackTrace(ex));
+                                ErrorMsg("Form load error", "Unable to load main form");
+                            }
+						} else {
+						    RpdErrorResponse errMsg = client.getErrorResponse();
+						    LOGGER.error("{} {} {} \n{}", errMsg.getCode(), errMsg.getMessage(), errMsg.getAction(), errMsg.getException());
+						    ErrorMsg(errMsg.getCode(), errMsg.getMessage(), errMsg.getAction());
 						}
 					});
 				}
