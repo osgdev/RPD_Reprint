@@ -17,7 +17,7 @@ import gov.dvla.osg.reprint.login.LogOut;
 import gov.dvla.osg.reprint.models.*;
 import gov.dvla.osg.reprint.report.Report;
 import gov.dvla.osg.reprint.utils.ErrorHandler;
-import gov.dvla.osg.reprint.utils.FileUtils;
+import gov.dvla.osg.reprint.utils.FileDeleter;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -222,7 +222,7 @@ public class SubmitJobController {
 		new Thread(() -> {
 			Platform.runLater(() -> {
 				int daysBack = 14;
-				FileUtils.deleteFilesOlderThanNdays(Config.getReprintWorkingDir(), daysBack);
+				FileDeleter.deleteFilesOlderThanNdays(Config.getReprintWorkingDir(), daysBack);
 				LogOut.logout();
 				enableButtons();
 				setGeneralSuccess("");

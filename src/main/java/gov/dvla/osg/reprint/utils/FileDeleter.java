@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import uk.gov.dvla.osg.rpd.config.Session;
 
 
-public class FileUtils {
+public class FileDeleter {
 
 	static final Logger LOGGER = LogManager.getLogger();
 	

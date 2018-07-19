@@ -1,8 +1,12 @@
 package gov.dvla.osg.reprint.submitJob;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import org.apache.commons.io.FileUtils;
 
 import gov.dvla.osg.reprint.models.Config;
 import uk.gov.dvla.osg.rpd.config.Session;
@@ -47,40 +51,35 @@ public class FileHandler {
 
     /**
      * Writes the file to the temp folder before sending.
-     * @param fileName
-     * @param content
+     * @param fileName the temp file to save the data to
+     * @param content the content to put in the file
      * @throws IOException
      */
     private void writeFile(String fileName, String content) throws IOException {
         File f = new File(fileName);
+        // Check that the user has write access to the temp directory
         if (f.canWrite()) {
-            // write access
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
-                bw.write(content);
-                bw.close();
-            }
+            FileUtils.writeStringToFile(f, content, Charset.forName("UTF-8"));
         } else {
-            // no write access
-            throw new IOException("User '" + Session.getInstance().getUserName() + "' does not have write permission to " + f.getParent() + ".");
+            throw new IOException("User '" + Session.getInstance().getUserName() + "' does not have write permission to " + f.getParent());
         }
     }
 
+    /**
+     * Gets the DAT file name.
+     *
+     * @return the dat file name
+     */
     public String getDatFileName() {
         return datFileName;
     }
     
+    /**
+     * Gets the EOT file name.
+     *
+     * @return the eot file name
+     */
     public String getEotFileName() {
         return eotFileName;
     }
-    /**
-     * Files are in the temp folder and are ready to send to RPD.
-     * @throws Exception
-     */
-/*    public void submit() {
-        SubmitJobClient client = SubmitJobClient.getInstance(NetworkConfig.getInstance());
-        boolean success = client.submit(datFileName);
-        if (success) {
-            client.submit(eotFileName);
-        }
-    }*/
 }
