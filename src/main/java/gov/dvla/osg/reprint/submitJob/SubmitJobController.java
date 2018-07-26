@@ -3,10 +3,7 @@ package gov.dvla.osg.reprint.submitJob;
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import javax.ws.rs.ProcessingException;
 
@@ -18,12 +15,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.Strings;
 
 import gov.dvla.osg.reprint.login.LogOut;
-import gov.dvla.osg.reprint.models.AbstractReprintType;
-import gov.dvla.osg.reprint.models.Config;
-import gov.dvla.osg.reprint.models.RangeReprint;
-import gov.dvla.osg.reprint.models.Session;
-import gov.dvla.osg.reprint.models.SingleReprint;
-import gov.dvla.osg.reprint.models.WholeBatchReprint;
+import gov.dvla.osg.reprint.models.*;
 import gov.dvla.osg.reprint.report.Report;
 import gov.dvla.osg.reprint.utils.ErrorHandler;
 import gov.dvla.osg.reprint.utils.FileUtils;
@@ -227,6 +219,7 @@ public class SubmitJobController {
 			Platform.runLater(() -> {
 				int daysBack = 14;
 				FileUtils.deleteFilesOlderThanNdays(Config.getReprintWorkingDir(), daysBack);
+				FileUtils.deleteFilesOlderThanNdays(Config.getReportWorkingDir(), daysBack);
 				LogOut.logout();
 				enableButtons();
 				setGeneralSuccess("");

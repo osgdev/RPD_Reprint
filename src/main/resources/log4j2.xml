@@ -6,7 +6,7 @@
 			<PatternLayout pattern="%d{dd-MM-yyyy HH:mm:ss} [%-5level] %c{36} - %msg%ex{short}%n" />
 		</Console>
 		<RollingFile name="file">
-			<FileName>J:/osg/OIs/RPD/reprint.log</FileName>
+			<FileName>J:/osg/OIs/RPD/reprint/reprint.log</FileName>
 			<FilePattern>J:/osg/OIs/RPD/reprint-%d{MM-yyyy}.log</FilePattern>
 			<PatternLayout>
 				<Pattern>%d{dd-MM-yyyy HH:mm:ss} [%-5level] %c{36} - %msg%ex{short}%n</Pattern>

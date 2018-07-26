@@ -21,10 +21,8 @@ public class JsonUtils {
 		try {
 			
 			/* User.Groups contains a json array with a single element getAsString() will
-			 * fail if there is more than one group in the User.Groups array */
-			
+			 * fail if there is more than one group in the User.Groups array */			
 			JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
-			System.out.println(json.toString());
 			// Check if user has been assigned to a group
 			boolean hasGroup = json.has("User.Groups");
 			if (hasGroup) {
