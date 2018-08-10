@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import org.apache.commons.io.FileUtils;
 
 import gov.dvla.osg.reprint.models.Config;
-import uk.gov.dvla.osg.rpd.config.Session;
+import uk.gov.dvla.osg.rpd.web.config.Session;
 
 /**
  * Constructs the dat and eot files in a temporary folder and then sends them to RPD. This enables admins to manually move files in the event that the REST service becomes unavailable.

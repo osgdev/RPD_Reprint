@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.glassfish.jersey.internal.util.ExceptionUtils;
 
 import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.utils.Cryptifier;
@@ -18,7 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import uk.gov.dvla.osg.rpd.config.NetworkConfig;
+import uk.gov.dvla.osg.rpd.web.config.NetworkConfig;
 
 /**
  * Send details of wrecks and reprints batches to RPD.
@@ -78,7 +78,7 @@ public class Main extends Application {
 			}
 			launch(args);
 		} catch (Exception e) {
-			LOGGER.fatal(ExceptionUtils.exceptionStackTraceAsString(e));
+			LOGGER.fatal(ExceptionUtils.getStackTrace(e));
 		}
 	}
 

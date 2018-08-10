@@ -14,9 +14,9 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import uk.gov.dvla.osg.rpd.client.LogOutClient;
-import uk.gov.dvla.osg.rpd.config.NetworkConfig;
-import uk.gov.dvla.osg.rpd.error.RpdErrorResponse;
+import uk.gov.dvla.osg.rpd.web.client.LogOutClient;
+import uk.gov.dvla.osg.rpd.web.config.NetworkConfig;
+import uk.gov.dvla.osg.rpd.web.error.RpdErrorResponse;
 
 public class LogOut {
 

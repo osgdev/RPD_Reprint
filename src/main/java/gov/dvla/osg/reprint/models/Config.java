@@ -15,15 +15,8 @@ public class Config {
     // decrypted properties holding configuration data
     private static Properties props = new Properties();
     private static String reprintWorkingDir;
-    private static String protocol;
-    private static String host;
-    private static String port;
-    private static String userUrl;
-    private static String loginUrl;
-    private static String logoutUrl;
     private static String reportWorkingDir;
     private static String fileNamePrefixReport;
-    private static String submitJobUrl;
     private static String appTypes;
     private static String cardTypes;
     private static String sites;
@@ -32,19 +25,29 @@ public class Config {
     private static String fileNamePrefixHal;
     
     /**
-     * @return the propsFile
+     * Gets the props file.
+     *
+     * @return the props file
      */
     public static String getPropsFile() {
         return propsFile;
     }
     
     /**
-     * @param props the props to set
+     * Sets the props file.
+     *
+     * @param file the new props file
      */
     public static void setPropsFile(String file) {
         propsFile = file;
     }
         
+    /**
+     * Gets the encrypted props.
+     *
+     * @return the encrypted props
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static byte[] getEncryptedProps() throws IOException {
             // Get props as byte array
             ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -54,21 +57,16 @@ public class Config {
         }
     
     /**
-     * @param reader
-     * @throws IOException
+     * Sets the props.
+     *
+     * @param reader the new props
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public static void setProps(InputStream reader) throws IOException {
         props.load(reader);
-        protocol = props.getProperty("protocol");
-        host = props.getProperty("host");
-        port = props.getProperty("port");
-        userUrl = props.getProperty("userUrl");
-        loginUrl = props.getProperty("loginUrl");
-        logoutUrl = props.getProperty("logoutUrl");
         reportWorkingDir = props.getProperty("reportWorkingDir");        
         reprintWorkingDir = props.getProperty("reprintWorkingDir");
         fileNamePrefixReport = props.getProperty("fileNamePrefixReport");
-        submitJobUrl = props.getProperty("submitJobUrl");
         appTypes = props.getProperty("appTypes");
         cardTypes = props.getProperty("cardTypes");
         sites = props.getProperty("sites");
@@ -76,9 +74,12 @@ public class Config {
         fileNamePrefixGeneral = props.getProperty("fileNamePrefixGeneral");
         fileNamePrefixHal = props.getProperty("fileNamePrefixHal");
     }
+    
     /**
-     * @param propKey
-     * @param propValue
+     * Update property.
+     *
+     * @param propKey the prop key
+     * @param propValue the prop value
      */
     public static void updateProperty(String propKey, String propValue) {
         props.setProperty(propKey, propValue);
@@ -92,40 +93,8 @@ public class Config {
         return props.keySet().stream().sorted().iterator();
     }
     
-    /**
-     * @return the reprintWorkingDir
-     */
     public static String getReprintWorkingDir() {
         return reprintWorkingDir;
-    }
-    /**
-     * @return the internet protocol
-     */
-    public static String getProtocol() {
-        return protocol;
-    }
-    
-    /**
-     * @return the host IP address
-     */
-    public static String getHost() {
-        return host;
-    }
-    
-    public static String getPort() {
-        return port;
-    }
-    
-    public static String getUserUrl() {
-        return userUrl;
-    }
-    
-    public static String getLoginUrl() {
-        return loginUrl;
-    }
-    
-    public static String getLogoutUrl() {
-        return logoutUrl;
     }
     
     public static String getReportWorkingDir() {
@@ -134,10 +103,6 @@ public class Config {
     
     public static String getFileNamePrefixReport() {
         return fileNamePrefixReport;
-    }
-    
-    public static String getSubmitJobUrl() {
-        return submitJobUrl;
     }
     
     public static String getAppTypes() {

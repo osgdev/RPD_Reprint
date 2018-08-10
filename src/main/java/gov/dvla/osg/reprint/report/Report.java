@@ -19,7 +19,7 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import gov.dvla.osg.reprint.models.Config;
-import uk.gov.dvla.osg.rpd.config.Session;
+import uk.gov.dvla.osg.rpd.web.config.Session;
 
 /**
  * Generate PDF report for stats team.

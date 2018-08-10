@@ -18,11 +18,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import uk.gov.dvla.osg.rpd.client.CheckGroupClient;
-import uk.gov.dvla.osg.rpd.client.LoginClient;
-import uk.gov.dvla.osg.rpd.config.NetworkConfig;
-import uk.gov.dvla.osg.rpd.config.Session;
-import uk.gov.dvla.osg.rpd.error.RpdErrorResponse;
+import uk.gov.dvla.osg.rpd.web.client.CheckGroupClient;
+import uk.gov.dvla.osg.rpd.web.client.LoginClient;
+import uk.gov.dvla.osg.rpd.web.config.NetworkConfig;
+import uk.gov.dvla.osg.rpd.web.config.Session;
+import uk.gov.dvla.osg.rpd.web.error.RpdErrorResponse;
 
 /**
  * Form methods and authentication.

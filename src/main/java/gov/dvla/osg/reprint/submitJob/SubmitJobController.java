@@ -5,8 +5,6 @@ import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 import java.io.IOException;
 import java.util.*;
 
-import javax.ws.rs.ProcessingException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,10 +29,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import uk.gov.dvla.osg.rpd.client.SubmitJobClient;
-import uk.gov.dvla.osg.rpd.config.NetworkConfig;
-import uk.gov.dvla.osg.rpd.config.Session;
-import uk.gov.dvla.osg.rpd.error.RpdErrorResponse;
+import uk.gov.dvla.osg.rpd.web.client.SubmitJobClient;
+import uk.gov.dvla.osg.rpd.web.config.Session;
+import uk.gov.dvla.osg.rpd.web.error.RpdErrorResponse;
 
 /**
  * Controller for the main screen.
@@ -299,11 +296,6 @@ public class SubmitJobController {
 						txtRange.setText("");
 						txtSingle.requestFocus();
 					});
-				} catch (ProcessingException e) {
-					Platform.runLater(() -> {
-						LOGGER.error("Unable to transmit reprint data file. [{}]", e.getMessage());
-						setGeneralError("Unable to transmit data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
-					});
 				} catch (IOException e) {
 					Platform.runLater(() -> {
 						LOGGER.error("Unable to create reprint data file. [{}]", e.getMessage());
@@ -368,11 +360,6 @@ public class SubmitJobController {
 						chboxSite.getSelectionModel().clearSelection();
 						chboxApp.requestFocus();
 					});
-				} catch (ProcessingException e) {
-					Platform.runLater(() -> {
-					    LOGGER.error("Unable to transmit reprint data file. [{}]", e.getMessage());
-                        setCardError("Unable to transmit data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
-					});
 				} catch (IOException e) {
 					Platform.runLater(() -> {
 					    LOGGER.error("Unable to create reprint data file. [{}]", e.getMessage());
@@ -427,12 +414,6 @@ public class SubmitJobController {
 						chboxSite.getSelectionModel().clearSelection();
 						chboxApp.requestFocus();
 					});
-
-				} catch (ProcessingException e) {
-					Platform.runLater(() -> {
-					    LOGGER.error("Unable to transmit reprint data file. [{}]", e.getMessage());
-                        setHalError("Unable to transmit data file.\n" + e.getMessage() + "\nContact Dev Team if problem persists.");
-					});
 				} catch (IOException e) {
 					Platform.runLater(() -> {
 					    LOGGER.error("Unable to create reprint data file. [{}]", e.getMessage());
@@ -455,7 +436,7 @@ public class SubmitJobController {
      * @throws Exception
      */
     private void submit() throws RuntimeException {
-        SubmitJobClient client = SubmitJobClient.getInstance(NetworkConfig.getInstance());
+        SubmitJobClient client = SubmitJobClient.getInstance();
         boolean success = client.submit(fileHandler.getDatFileName());
         
         if (!success) {
