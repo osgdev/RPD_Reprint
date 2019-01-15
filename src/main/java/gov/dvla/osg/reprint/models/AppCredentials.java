@@ -17,7 +17,7 @@ import gov.dvla.osg.reprint.main.Main;
 public class AppCredentials {
 	static final Logger LOGGER = LogManager.getLogger();
     private final String userName = "ReprintApp";
-    private final String password ="@Juliet1234";
+    private final String password ="@Mike1234";
     private String token = "";
     private String passwordsFile = "";
     
