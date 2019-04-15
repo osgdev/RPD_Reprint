@@ -3,7 +3,9 @@ package gov.dvla.osg.reprint.login;
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
 import java.io.IOException;
+import java.net.URL;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,10 +19,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -89,20 +88,30 @@ public class LoginController {
 				} else {
 					LOGGER.trace("Login Complete.");
 					Platform.runLater(() -> {
-						try {
+						//try {
 							// bypass group check if running in debug mode
-							if (!Main.DEBUG_MODE) {
+						    if (!Main.DEBUG_MODE) {
 								CheckGroup.CheckIfAdmin();
 							}
 							// close login page and load main view
-							FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/SubmitJobGui.fxml"));
-							Parent root = loader.load();
+							Class<? extends LoginController> class1 = getClass();
+                            String submitJobGui = "/FXML/SubmitJobGui.fxml";
+                            URL resource = class1.getResource(submitJobGui);
+                            FXMLLoader loader = new FXMLLoader(resource);
+							Parent root = null;
+                            try {
+                                root = loader.load();
+                            } catch (IOException ex) {
+                                // TODO Auto-generated catch block
+                                ex.printStackTrace();
+                                ExceptionUtils.rethrow(ex);
+                                System.exit(1);
+                            }
 							Stage submitJobStage = new Stage();
 							submitJobStage.setResizable(false);
 							// Display logged in user in titlebar
 							submitJobStage.setTitle("RPD Reprints - " + Session.getUserName());
-							submitJobStage.getIcons()
-									.add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
+							submitJobStage.getIcons().add(new Image(class1.getResourceAsStream("/Images/logo.jpg")));
 							submitJobStage.setScene(new Scene(root));
 							submitJobStage.show();
 							// force logout by routing the close request to the logout method
@@ -111,11 +120,11 @@ public class LoginController {
 								((SubmitJobController)loader.getController()).logout();
 							});
 							closeLogin();
-						} catch (IOException e) {
+/*						} catch (IOException e) {
 							Platform.runLater(() -> {
 								ErrorMsg(e.getClass().getSimpleName(), e.getMessage());
 							});
-						}
+						}*/
 					});
 				}
 			}).start();
