@@ -57,7 +57,7 @@ public class AppCredentials {
 			InputStream reader = new ByteArrayInputStream(fileContents);
 			Properties appPasswords = new Properties();
 			appPasswords.load(reader);
-			return (String) appPasswords.get(userName);
+			return appPasswords.getProperty(userName);
 		} catch (Exception ex) {
 			LOGGER.fatal("Unable to load application password file.", ex);
 		}
