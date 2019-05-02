@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
-import gov.dvla.osg.reprint.models.AppCredentials;
 import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.utils.JsonUtils;
@@ -62,23 +61,19 @@ public class RestClient {
 	 * @return 202 status code if file was transmitted successfully
 	 */
 	public static Response rpdSubmit(String url, MultiPart multiPart) {
-        /*********** Retrieve token for the AIW user ****************/
-        AppCredentials appCredentials = null;
-
+        /*********** Retrieve new token for the AIW user ****************/
         try {
             String loginUrl = Config.getProtocol() + Config.getHost() + ":" + Config.getPort() + Config.getLoginUrl();
             
-            appCredentials = new AppCredentials();
-            
             Response response = ClientBuilder.newClient()
                 .target(loginUrl)
-                .queryParam("name", appCredentials.getUsername())
-                .queryParam("pwd", appCredentials.getPassword())
+                .queryParam("name", Session.getUserName())
+                .queryParam("pwd", Session.getPassword())
                 .request(MediaType.APPLICATION_JSON)
                 .get();
             
             String data = response.readEntity(String.class);
-            appCredentials.setToken(JsonUtils.getTokenFromJson(data));
+            Session.setToken(JsonUtils.getTokenFromJson(data));
         } catch (Exception ex) {
             LOGGER.fatal("Unable to log Application into RPD. Check password is valid.", ex.getMessage());
         }
@@ -89,7 +84,7 @@ public class RestClient {
 				.register(MultiPartFeature.class)
 				.target(url)
 				.request(MediaType.APPLICATION_JSON)
-		        .header("ippdcredential", "<credential token='" + appCredentials.getToken() + "'/>")
+		        .header("ippdcredential", "<credential token='" + Session.getToken() + "'/>")
 		        .post(Entity.entity(multiPart, multiPart.getMediaType()));
 	}
 	
