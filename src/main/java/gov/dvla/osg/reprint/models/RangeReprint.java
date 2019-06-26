@@ -1,5 +1,8 @@
 package gov.dvla.osg.reprint.models;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 public class RangeReprint extends AbstractReprintType {
     private String endPiece;
 
@@ -25,6 +28,10 @@ public class RangeReprint extends AbstractReprintType {
         int start = Integer.parseInt(pieceId);
         int end = Integer.parseInt(endPiece);
         String result = "";
+        
+        IntStream.range(Integer.parseInt(jobId + pieceId), Integer.parseInt(jobId + endPiece))
+                 .mapToObj(Integer::toString)
+                 .collect(Collectors.joining("\n"));
         
         for (int count = start; count <= end; count++) {
             if (count < end) {

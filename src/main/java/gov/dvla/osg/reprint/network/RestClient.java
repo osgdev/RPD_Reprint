@@ -79,7 +79,7 @@ public class RestClient {
         }
         /**********************************************************/
 	    
-		// Send file using the APP token
+		// Send file using the new token
 		return ClientBuilder.newClient()
 				.register(MultiPartFeature.class)
 				.target(url)
