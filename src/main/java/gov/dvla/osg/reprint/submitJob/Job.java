@@ -35,11 +35,11 @@ public class Job {
 
         try {
         	// construct html body with file as attachment
-        	LOGGER.trace("Creating MultiPart...");
+        	LOGGER.debug("Creating MultiPart...");
         	MultiPart multiPart = new MultiPart();
             multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
             multiPart.bodyPart(new FileDataBodyPart("file", new File(filename)));
-            LOGGER.trace("MultiPart Created!");
+            LOGGER.debug("MultiPart Created!");
             // send the message to RPD - errors thrown by outer catch block
         	Response response = RestClient.rpdSubmit(url, multiPart);
         	// 202 response means file received by RPD

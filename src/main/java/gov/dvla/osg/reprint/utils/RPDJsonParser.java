@@ -2,15 +2,13 @@ package gov.dvla.osg.reprint.utils;
 
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 
 /**
  * Utility methods to extract information from the JSON data responses that are
  * returned from the RPD REST api.
  */
-public class JsonUtils {
+public class RPDJsonParser {
 	
 	/**
 	 * Extracts the user group from the message body of a request.
@@ -19,14 +17,14 @@ public class JsonUtils {
 	 */
 	public static Boolean isUserInDevGroup(String jsonString) {
 		try {
-			
-			/* User.Groups contains a json array with a single element getAsString() will
-			 * fail if there is more than one group in the User.Groups array */			
 			JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
-			// Check if user has been assigned to a group
-			boolean hasGroup = json.has("User.Groups");
-			if (hasGroup) {
-				return json.get("User.Groups").getAsString().equalsIgnoreCase("dev");
+			// loop through and check all groups the user is a member of
+			if (json.has("User.Groups") && json.get("User.Groups").isJsonArray()) {
+			    for (JsonElement group : json.get("User.Groups").getAsJsonArray()) {
+			        if (group.getAsString().equalsIgnoreCase("dev")) {
+			            return true;
+			        }
+			    }
 			}
 		} catch (JsonSyntaxException e) {
 			ErrorMsg("getTokenFromJson", "String is not valid JSON.", e.getMessage());

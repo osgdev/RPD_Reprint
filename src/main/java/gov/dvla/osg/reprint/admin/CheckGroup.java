@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.network.RestClient;
-import gov.dvla.osg.reprint.utils.JsonUtils;
+import gov.dvla.osg.reprint.utils.RPDJsonParser;
 
 /**
  * Access to admin area granted to dev team only.
@@ -29,7 +29,7 @@ public class CheckGroup {
 		try (Response response = RestClient.rpdGroup(url)) {
 			if (response.getStatus() == 200) {
 				String jsonData = response.readEntity(String.class);
-				Session.setIsAdmin(JsonUtils.isUserInDevGroup(jsonData));
+				Session.setIsAdmin(RPDJsonParser.isUserInDevGroup(jsonData));
 			} else {
 				// thrown exception prevents main window from opening.
 				String msg = "Null response from RPD web server.";

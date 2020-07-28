@@ -11,7 +11,7 @@ import com.google.gson.GsonBuilder;
 import gov.dvla.osg.reprint.models.Config;
 import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.network.RestClient;
-import gov.dvla.osg.reprint.utils.JsonUtils;;
+import gov.dvla.osg.reprint.utils.RPDJsonParser;;
 
 /**
  * Sends login request to the RPD webservice. Token is obtained from
@@ -34,7 +34,7 @@ public class LogIn {
         	LOGGER.debug(response.toString());
         	String data = response.readEntity(String.class); 
             if (response.getStatus() == 200) {
-            	Session.setToken(JsonUtils.getTokenFromJson(data));
+            	Session.setToken(RPDJsonParser.getTokenFromJson(data));
             } else {
             	// RPD provides clear error information, and so is mapped to model
                 LoginBadResponseModel br = new GsonBuilder().create().fromJson(data, LoginBadResponseModel.class);

@@ -41,14 +41,14 @@ public class Report {
 	        String timestamp = now.format(formatter);
 			String fName = Config.getReportWorkingDir() + Config.getFileNamePrefixReport() + Session.getUserName() + "." + timestamp + ".pdf";
 			// see if report file aready exists
-			File checkFile = new File(fName);
-			if (checkFile.exists()) {
-				checkFile.delete();
+			File pdfFile = new File(fName);
+			if (pdfFile.exists()) {
+				pdfFile.delete();
 			}
 			// pdf document object to write to file
 			Document pdfDoc = new Document();
 
-			try (FileOutputStream fos = new FileOutputStream(fName)) {
+			try (FileOutputStream fos = new FileOutputStream(pdfFile)) {
 				// pdf writer to write to the document
 				PdfWriter.getInstance(pdfDoc, fos);
 				// all text is appended to a single paragraph
@@ -71,7 +71,6 @@ public class Report {
 			
 			/*** SHOW REPORT ****/
 			if (Desktop.isDesktopSupported()) {
-				File pdfFile = new File(fName);
 				Desktop.getDesktop().open(pdfFile);
 			}
 			/***************************************/
