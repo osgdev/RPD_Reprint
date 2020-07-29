@@ -3,6 +3,7 @@ package gov.dvla.osg.reprint.main;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -39,7 +40,7 @@ public class Main extends Application {
 	static final Logger LOGGER = LogManager.getLogger();
 	
 	private static final String APPLICATION_VERSION = "4.0.5";
-	public static final boolean DEBUG_MODE = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
+	public static final boolean DEBUG_MODE = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().indexOf("-agentlib:jdwp") > 0;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -57,7 +58,7 @@ public class Main extends Application {
 	    LOGGER.trace("Starting App...");
 		try {
 			if (args.length != 1) {
-				LOGGER.fatal("Incorrect number of args, Usage: {file}.jar {properties_filepath}");
+				LOGGER.fatal("Incorrect number of args, Usage: {jar} {properties_filepath}");
 				System.exit(1);
 			} else {
 				Config.setPropsFile(args[0]);

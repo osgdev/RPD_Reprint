@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gov.dvla.osg</groupId>
 	<artifactId>rpd_reprint</artifactId>
-	<version>4.0.1-BETA</version>
+	<version>4.0.1</version>
 	<name>RPD Reprint Application</name>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -72,5 +72,4 @@
 			<version>5.5.13.1</version>
 		</dependency>
 	</dependencies>
-
 </project>
