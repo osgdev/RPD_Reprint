@@ -34,31 +34,30 @@ public class Job {
         String url = Config.getProtocol() + Config.getHost() + ":" + Config.getPort() + Config.getSubmitJobUrl();
 
         try {
+            LOGGER.debug("Creating MultiPart...");
         	// construct html body with file as attachment
-        	LOGGER.debug("Creating MultiPart...");
         	MultiPart multiPart = new MultiPart();
             multiPart.setMediaType(MediaType.MULTIPART_FORM_DATA_TYPE);
             multiPart.bodyPart(new FileDataBodyPart("file", new File(filename)));
             LOGGER.debug("MultiPart Created!");
+            
             // send the message to RPD - errors thrown by outer catch block
         	Response response = RestClient.rpdSubmit(url, multiPart);
+        	
         	// 202 response means file received by RPD
-            if (response.getStatus() == 202) {
-            	LOGGER.trace("Success!");
+            if (response.getStatus() == 200) {
+            	LOGGER.info("Success!");
             	// File received by RPD, file can be safely deleted
             	if (Files.exists(Paths.get(filename), LinkOption.NOFOLLOW_LINKS)) {
             		Files.deleteIfExists(Paths.get(filename));
             	} 
             } else {
-            	System.out.println("Failure "+String.valueOf(response.getStatus())+response.getStatusInfo().getReasonPhrase());
-            	// File failed to transmit, show response status in dialog to user
-            	Platform.runLater(() -> {
-            		ErrorMsg(String.valueOf(response.getStatus()), response.getStatusInfo().getReasonPhrase());
-				});
+            	LOGGER.error("Failure: Status='{}' Reason='{}'", String.valueOf(response.getStatus()), response.getStatusInfo().getReasonPhrase());
+            	Platform.runLater(() -> ErrorMsg(String.valueOf(response.getStatus()), response.getStatusInfo().getReasonPhrase()));
         	}	
-        } catch (Exception e) {
+        } catch (Exception ex) {
         	// submission errors are handled by the SubmitJobController
-			throw e;
+			throw ex;
         }
     }
 }

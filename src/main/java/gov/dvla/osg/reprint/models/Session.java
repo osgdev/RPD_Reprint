@@ -7,7 +7,7 @@ public class Session {
     private static String userName;
     private static String password;
     private static String token;
-    private static Boolean isAdmin;
+    private static boolean isAdmin = false;
 
     /**
      * @return the userName
@@ -54,14 +54,14 @@ public class Session {
     /**
      * @return the isAdmin
      */
-    public static Boolean getIsAdmin() {
+    public static boolean getIsAdmin() {
         return isAdmin;
     }
 
     /**
      * @param isAdmin the isAdmin to set
      */
-    public static void setIsAdmin(Boolean isAdmin) {
+    public static void setIsAdmin(boolean isAdmin) {
         Session.isAdmin = isAdmin;
     }
 

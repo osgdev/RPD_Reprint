@@ -48,8 +48,7 @@ public class ErrorHandler {
 		// set the title on the window
 		dialog.setTitle("RPD Error");
 		// add logo to dialog
-		((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons()
-				.add(new Image(ErrorHandler.class.getResource("/Images/logo.jpg").toString()));
+		((Stage) dialog.getDialogPane().getScene().getWindow()).getIcons().add(new Image(ErrorHandler.class.getResource("/Images/logo.jpg").toString()));
 		// add content to the pane
 		DialogPane dialogPane = dialog.getDialogPane();
 		dialogPane.getButtonTypes().add(ButtonType.OK);
@@ -58,7 +57,7 @@ public class ErrorHandler {
 		// display dialog and wait for a button to be clicked
 		Optional<ButtonType> result = dialog.showAndWait();
 		if (result.isPresent() && result.get() != ButtonType.OK) {
-			LOGGER.fatal("ErrorHandler: error closing dialog.");
+			LOGGER.error("ErrorHandler: error closing dialog.");
 		}
 	}
 }

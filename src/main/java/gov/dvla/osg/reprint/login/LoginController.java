@@ -1,6 +1,7 @@
 package gov.dvla.osg.reprint.login;
 
 import static gov.dvla.osg.reprint.utils.ErrorHandler.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
 
@@ -14,13 +15,11 @@ import gov.dvla.osg.reprint.main.Main;
 import gov.dvla.osg.reprint.models.Session;
 import gov.dvla.osg.reprint.submitJob.SubmitJobController;
 import javafx.application.Platform;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -36,6 +35,14 @@ public class LoginController {
 	public Button btnLogin;
 	public Label lblMessage;
 
+	   /**
+     * Initialize list items when form loads.
+     */
+    @FXML
+    public void initialize() {
+        btnLogin.setDisable(!Main.DEBUG_MODE);
+    }
+    
 	/**
 	 * Submits login request to RPD webservice. If token is retrieved then the user
 	 * is authenticated, else the RPD error message is displayed.
@@ -70,7 +77,7 @@ public class LoginController {
 
 			// Login performed on background thread to prevent GUI freezing
 			new Thread(() -> {
-				LOGGER.trace("Attempting to login...");
+				LOGGER.info("Attempting to login...");
 				// bypass login while testing
 				if (!Main.DEBUG_MODE) {
 					login.login();
@@ -87,7 +94,7 @@ public class LoginController {
 						passwordField.requestFocus();
 					});
 				} else {
-					LOGGER.trace("Login Complete.");
+					LOGGER.info("Login Complete.");
 					Platform.runLater(() -> {
 						try {
 							// bypass group check if running in debug mode
@@ -101,20 +108,19 @@ public class LoginController {
 							submitJobStage.setResizable(false);
 							// Display logged in user in titlebar
 							submitJobStage.setTitle("RPD Reprints - " + Session.getUserName());
-							submitJobStage.getIcons()
-									.add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
+							submitJobStage.getIcons().add(new Image(getClass().getResourceAsStream("/Images/logo.jpg")));
 							submitJobStage.setScene(new Scene(root));
 							submitJobStage.show();
 							// force logout by routing the close request to the logout method
 							submitJobStage.setOnCloseRequest(we -> {
-								we.consume();
-								((SubmitJobController)loader.getController()).logout();
+							    if (!Main.DEBUG_MODE) {
+		                             we.consume();
+		                             ((SubmitJobController)loader.getController()).logout();
+							    }
 							});
 							closeLogin();
 						} catch (IOException e) {
-							Platform.runLater(() -> {
-								ErrorMsg(e.getClass().getSimpleName(), e.getMessage());
-							});
+							Platform.runLater(() -> ErrorMsg(e.getClass().getSimpleName(), e.getMessage()));
 						}
 					});
 				}
@@ -135,7 +141,7 @@ public class LoginController {
 	 * button is only enabled when both fields contain text.
 	 */
 	public void txtChanged() {
-		if (nameField.getText().trim().equals("") || passwordField.getText().trim().equals("")) {
+		if (isBlank(nameField.getText()) || isBlank(passwordField.getText())) {
 			btnLogin.setDisable(true);
 		} else {
 			btnLogin.setDisable(false);

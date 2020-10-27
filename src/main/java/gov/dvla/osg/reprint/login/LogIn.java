@@ -28,7 +28,7 @@ public class LogIn {
     public void login() {
         
         String url = Config.getProtocol() + Config.getHost() + ":" + Config.getPort() + Config.getLoginUrl();
-        
+        LOGGER.debug(url);
         try {
         	Response response = RestClient.rpdLogin(url);
         	LOGGER.debug(response.toString());
@@ -42,19 +42,22 @@ public class LogIn {
                 errorAction = br.getAction();
                 errorCode = br.getCode();
             }
-        } catch (ProcessingException e) {
+        } catch (ProcessingException ex) {
+            LOGGER.error("Unable to connect to RPD web service: {}", ex.getMessage());
 			errorMessage = "Unable to connect to RPD web service.";
             errorAction = "If the problem persits, please contact Dev team.";
-            errorCode = "connection timed out";
-        } catch (NullPointerException e) {
+            errorCode = "Connection timed out.";
+        } catch (NullPointerException ex) {
+            LOGGER.error("Unable to connect to RPD web service: {}", ex.getMessage());
         	errorMessage = "Unable to connect to RPD web service.";
             errorAction = "If the problem persits, please contact Dev team.";
             errorCode = "Invalid IP address for RPD";
         }
-        catch (Exception e) {
-			errorMessage = e.getMessage();
+        catch (Exception ex) {
+            LOGGER.error("Unable to connect to RPD web service: {}", ex.getMessage());
+			errorMessage = ex.getMessage();
             errorAction = "If the problem persits, please contact Dev team.";
-            errorCode = "Login error: " + e.getClass().getSimpleName();
+            errorCode = "Login error: " + ex.getClass().getSimpleName();
         }
     }
 

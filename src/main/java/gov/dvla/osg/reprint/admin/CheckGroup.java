@@ -33,7 +33,7 @@ public class CheckGroup {
 			} else {
 				// thrown exception prevents main window from opening.
 				String msg = "Null response from RPD web server.";
-				LOGGER.fatal(msg);
+				LOGGER.error(msg);
 				throw new Exception(msg);
 			}
 		} catch (ProcessingException e) {
